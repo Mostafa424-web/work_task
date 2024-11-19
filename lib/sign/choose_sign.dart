@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:works/sign/sign_up.dart';
 
 import '../utils/sign_button.dart';
+import 'login_screen.dart';
 
 class ChooseLog extends StatelessWidget {
   const ChooseLog({super.key});
@@ -32,7 +33,7 @@ class ChooseLog extends StatelessWidget {
                   onPress: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SignUp()), // New screen
+                  MaterialPageRoute(builder: (context) => const LoginScreen()), // New screen
                 );})
             ],
           ),

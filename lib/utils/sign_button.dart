@@ -11,9 +11,8 @@ class SignButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16,),
       width: double.infinity,
       child: MaterialButton(
-        onPressed:
-            (){
-          onPress();
+        onPressed: (){
+           onPress();
         },
         color: const Color(0xff3D3BF3), // Button background color
         textColor: Colors.white, // Text color

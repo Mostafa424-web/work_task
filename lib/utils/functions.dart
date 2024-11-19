@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'drop_down_menu.dart';
-import 'navigator.dart';
+import '../home_screen/instructor_screen.dart';
+import '../home_screen/learner_screen.dart';
+import '../home_screen/mentor_screen.dart';
 
 bool isValidEmail(String email, BuildContext context) {
   // Define the regex pattern for validating email ending with ".com"
@@ -48,8 +49,9 @@ InputDecoration customInputDecoration(String hintText) {
   );
 }
 
-
-Future<User?> signUpWithEmailAndPassword(String name, String email, String password, context) async {
+Future<User?> signUpWithEmailAndPassword(
+    String name, String email, String password, context, String? role) async {
+  int currentNumber = 1;
   try {
     // Check if email, password or name is empty
     if (email.isEmpty || password.isEmpty || name.isEmpty) {
@@ -59,31 +61,51 @@ Future<User?> signUpWithEmailAndPassword(String name, String email, String passw
       return null;
     } else {
       // Create user with email and password
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
       User? user = userCredential.user;
 
-      if (user != null){
-        // Save User to fireStore database
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'name': name,
-          'email': email,
-          'uid': user.uid,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+      Map<String, dynamic> userData = {
+        'number': currentNumber,
+        'name': name,
+        'email': email,
+        'role': role,
+        'created_at': FieldValue.serverTimestamp(),
+        'uid': user!.uid,
+      };
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(userData);
+        currentNumber = currentNumber + 1;
 
-        // Navigate to the next screen after user creation
-        Navigation.navigateAndRemoveAllNamed(context, MaterialPageRoute(builder: (context) => const DropDownMenuScreen()));
+        print(role);
+          if (role == 'Learner') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LearnerScreen(userData: userData)),
+            );
+          } else if (role == 'Instructor') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const InstructorScreen()),
+            );
+          } else if (role == 'Mentor') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const MentorScreen()),
+            );
+          } else {
+            showCustomSnackBar(context: context, message: "Invalid role selected.");
+          }
+          // Navigate to the next screen after user creation
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Welcome, ${user.email}!")),
+          );
         return user;
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to create user.')),
-        );
-        return null;
-      }
     }
   } on FirebaseAuthException catch (e) {
     // Handle Firebase auth errors
@@ -93,7 +115,8 @@ Future<User?> signUpWithEmailAndPassword(String name, String email, String passw
       );
     } else if (e.code == 'email-already-in-use') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("The account already exists for that email.")),
+        const SnackBar(
+            content: Text("The account already exists for that email.")),
       );
     } else if (e.code == 'invalid-email') {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,5 +127,34 @@ Future<User?> signUpWithEmailAndPassword(String name, String email, String passw
   } catch (e) {
     print("Error: $e");
     return null;
+  }
+}
+
+Future<User?> signInWithEmailAndPassword(
+    String email, String password, context) async {
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    // Return the signed-in user
+    return userCredential.user;
+  } on FirebaseAuthException catch (e) {
+    // Handle specific FirebaseAuth errors
+    if (e.code == 'user-not-found') {
+      print("No user found for that email.");
+      throw Exception("No user found for that email.");
+    } else if (e.code == 'wrong-password') {
+      print("Wrong password provided.");
+      throw Exception("Wrong password provided.");
+    } else if (e.code == 'invalid-email') {
+      print("Invalid email address.");
+      throw Exception("Invalid email address.");
+    } else {
+      print("Unknown error: ${e.message}");
+      throw Exception("Error: ${e.message}");
+    }
+  } catch (e) {
+    // Handle any other errors
+    print("An error occurred: $e");
+    throw Exception("An error occurred. Please try again.");
   }
 }

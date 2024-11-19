@@ -2,15 +2,31 @@ import 'package:flutter/material.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passController = TextEditingController();
+  State<SignUp> createState() => _SignUpState();
+}
 
+final TextEditingController nameController = TextEditingController();
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passController = TextEditingController();
+
+class _SignUpState extends State<SignUp> {
+  @override
+  void dispose() {
+    // Dispose the controller when the widget is disposed
+    nameController.dispose();
+    emailController.dispose();
+    passController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String? selectedRole;
+    final List<String> roles = ['Instructor', 'Learner', 'Mentor'];
     return Scaffold(
       body: Center(
         child: Column(
@@ -51,11 +67,39 @@ class SignUp extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: DropdownButtonFormField<String>(
+                value: selectedRole,
+                hint: const Text('Select a role'),
+                items: roles.map((role) {
+                  return DropdownMenuItem<String>(
+                    value: role,
+                    child: Text(role),
+                  );
+                }).toList(),
+                onChanged: (value) async {
+                  setState(() {
+                    selectedRole = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             SignButton(
                 text: 'Sign Up',
-                onPress: () {
-                  signUpWithEmailAndPassword(nameController.text.trim(),emailController.text.trim(),
-                      passController.text.trim(), context);
+                onPress: () async {
+                  await signUpWithEmailAndPassword(
+                      nameController.text.trim(),
+                      emailController.text.trim(),
+                      passController.text.trim(),
+                      context,
+                      selectedRole);
                 })
           ],
         ),
