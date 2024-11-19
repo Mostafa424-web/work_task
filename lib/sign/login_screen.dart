@@ -35,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     return 'email is not valid';
                   }
-                  return null;
                 },
                 decoration: customInputDecoration("enter your email"),
               ),

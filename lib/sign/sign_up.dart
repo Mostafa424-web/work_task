@@ -50,7 +50,6 @@ class _SignUpState extends State<SignUp> {
                   } else {
                     return 'email is not valid';
                   }
-                  return null;
                 },
                 decoration: customInputDecoration("enter your email"),
               ),
