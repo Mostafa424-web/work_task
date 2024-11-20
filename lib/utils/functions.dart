@@ -79,7 +79,6 @@ Future<User?> signUpWithEmailAndPassword(
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set(userData);
         currentNumber = currentNumber + 1;
 
-        print(role);
           if (role == 'Learner') {
             Navigator.pushReplacement(
               context,

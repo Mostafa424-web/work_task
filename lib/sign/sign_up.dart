@@ -81,6 +81,7 @@ class _SignUpState extends State<SignUp> {
                   setState(() {
                     selectedRole = value;
                   });
+                  print(selectedRole);
                 },
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
