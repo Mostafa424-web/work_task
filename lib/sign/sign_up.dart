@@ -14,6 +14,7 @@ final TextEditingController emailController = TextEditingController();
 final TextEditingController passController = TextEditingController();
 
 class _SignUpState extends State<SignUp> {
+  String? selectedRole;
   @override
   void dispose() {
     // Dispose the controller when the widget is disposed
@@ -25,7 +26,6 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    String? selectedRole;
     final List<String> roles = ['Instructor', 'Learner', 'Mentor'];
     return Scaffold(
       body: Center(

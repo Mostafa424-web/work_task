@@ -76,7 +76,7 @@ Future<void> handleSignIn() async {
       if (userDoc.exists) {
         Map<String, dynamic>? userData =
         userDoc.data() as Map<String, dynamic>?;
-        String? role = userData?['Your Role'];
+        String? role = userData?['role'];
 
         if (role == 'Learner') {
           Navigator.pushReplacement(
@@ -90,12 +90,14 @@ Future<void> handleSignIn() async {
             MaterialPageRoute(
                 builder: (context) => const InstructorScreen()),
           );
-        } else {
+        } else if (role == 'Mentor') {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => const MentorScreen()),
           );
+        } else {
+          showCustomSnackBar(context: context, message: "Role is null.");
         }
         // Navigate to the next screen after user creation
         ScaffoldMessenger.of(context).showSnackBar(

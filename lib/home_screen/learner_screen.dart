@@ -10,9 +10,9 @@ class LearnerScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Learner Screen')),
       body: ListTile(
                 leading: const Icon(Icons.person),
-                title: Text(userData!['name']),
-                subtitle: Text((userData!['Number']).toString()),
-                trailing: Text(userData!['Your Role']),
+                title: Text(userData!['name'] ?? 'Your Name'),
+                subtitle: Text((userData!['number']).toString() ?? 'N/A'),
+                trailing: Text(userData!['Your Role'] ?? 'Role'),
               ),
     );
   }
