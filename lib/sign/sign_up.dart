@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -12,95 +15,187 @@ class SignUp extends StatefulWidget {
 final TextEditingController nameController = TextEditingController();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passController = TextEditingController();
+final TextEditingController passRoleController = TextEditingController();
 
 class _SignUpState extends State<SignUp> {
   String? selectedRole;
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImage = File(image.path);
+      });
+    }
+  }
+
   @override
   void dispose() {
     // Dispose the controller when the widget is disposed
     nameController.dispose();
     emailController.dispose();
     passController.dispose();
+    passRoleController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> roles = ['Instructor', 'Learner', 'Mentor'];
+    final List<String> roles = ['Flutter Instructor', 'Flutter Learner', 'Flutter Mentor', 'UI/UX Instructor', 'UI/UX Learner', 'UI/UX Mentor', 'Tester Instructor', 'Tester Learner', 'Tester Mentor'];
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFormField(
-                controller: nameController,
-                decoration: customInputDecoration("enter your name"),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFormField(
-                controller: emailController,
-                validator: (emailController) {
-                  if (isValidEmail(emailController!.trim(), context)) {
-                    return 'email is valid';
-                  } else {
-                    return 'email is not valid';
-                  }
-                },
-                decoration: customInputDecoration("enter your email"),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextFormField(
-                controller: passController,
-                obscureText: true,
-                decoration: customInputDecoration("enter your password"),
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: DropdownButtonFormField<String>(
-                value: selectedRole,
-                hint: const Text('Select a role'),
-                items: roles.map((role) {
-                  return DropdownMenuItem<String>(
-                    value: role,
-                    child: Text(role),
-                  );
-                }).toList(),
-                onChanged: (value) async {
-                  setState(() {
-                    selectedRole = value;
-                  });
-                  print(selectedRole);
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Hello, Friend !',
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
-              ),
+                const Text(
+                  'Enter your personal details  \n and start journey with us',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(height: 20,),
+                _selectedImage != null
+                    ? Stack(
+                      children: [
+                        CircleAvatar(
+                            radius: 75,
+                            backgroundImage: FileImage(
+                              _selectedImage!,
+                              // fit: BoxFit.cover,
+                            ),
+                          ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: GestureDetector(
+                            onTap: _pickImage, // Trigger image picker on tap
+                            child: const CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.blue,
+                              child: Icon(Icons.camera_alt_outlined, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                    : Stack(
+                      children: [
+                        const CircleAvatar(
+                            radius: 75,
+                            child: Icon(Icons.person, size: 50),
+                          ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: GestureDetector(
+                            onTap: _pickImage, // Trigger image picker on tap
+                            child: const CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.blue,
+                              child: Icon(Icons.camera_alt_outlined, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextFormField(
+                    controller: nameController,
+                    decoration: customInputDecoration(
+                        hintText: "User name", icon: Icons.person_rounded),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextFormField(
+                    controller: emailController,
+                    validator: (emailController) {
+                      if (isValidEmail(emailController!.trim(), context)) {
+                        return 'email is valid';
+                      } else {
+                        return 'email is not valid';
+                      }
+                    },
+                    decoration: customInputDecoration(
+                        hintText: "email", icon: Icons.email_outlined),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextFormField(
+                    controller: passController,
+                    obscureText: true,
+                    decoration: customInputDecoration(
+                        hintText: "password",
+                        icon: Icons.lock,
+                        suffix: Icons.remove_red_eye),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: DropdownButtonFormField<String>(
+                    value: selectedRole,
+                    hint: const Text('Select a role'),
+                    items: roles.map((role) {
+                      return DropdownMenuItem<String>(
+                        value: role,
+                        child: Text(role),
+                      );
+                    }).toList(),
+                    onChanged: (value) async {
+                      setState(() {
+                        selectedRole = value;
+                      });
+                      print(selectedRole);
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                selectedRole != null ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextFormField(
+                    controller: passRoleController,
+                    obscureText: true,
+                    decoration: customInputDecoration(
+                        hintText: "password of Your role",
+                        icon: Icons.lock,
+                        suffix: Icons.remove_red_eye),
+                  ),
+                ) : const SizedBox(height: 2,),
+                const SizedBox(height: 20,),
+                SignButton(
+                    text: 'Sign Up',
+                    onPress: () async {
+                      await signUpWithEmailAndPassword(
+                          nameController.text.trim(),
+                          emailController.text.trim(),
+                          passController.text.trim(),
+                          context,
+                          selectedRole,
+                      _selectedImage,
+                      passRoleController.text.trim());
+                    })
+              ],
             ),
-            const SizedBox(height: 20),
-            SignButton(
-                text: 'Sign Up',
-                onPress: () async {
-                  await signUpWithEmailAndPassword(
-                      nameController.text.trim(),
-                      emailController.text.trim(),
-                      passController.text.trim(),
-                      context,
-                      selectedRole);
-                })
           ],
         ),
       ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +40,11 @@ void showCustomSnackBar({
   );
 }
 
-InputDecoration customInputDecoration(String hintText) {
+InputDecoration customInputDecoration({required String hintText, required IconData icon, IconData? suffix}) {
   return InputDecoration(
     hintText: hintText,
+    suffixIcon: Icon(suffix,color: const Color(0xff4F94BF),),
+    prefixIcon: Icon(icon,size: 24,color: const Color(0xff4F94BF),),
     fillColor: Colors.white.withOpacity(0.7),
     filled: true,
     border: OutlineInputBorder(
@@ -50,7 +54,7 @@ InputDecoration customInputDecoration(String hintText) {
 }
 
 Future<User?> signUpWithEmailAndPassword(
-    String name, String email, String password, context, String? role) async {
+    String name, String email, String password, context, String? role, File? image, String passwordRole) async {
   int currentNumber = 1;
   try {
     // Check if email, password or name is empty
@@ -75,23 +79,24 @@ Future<User?> signUpWithEmailAndPassword(
         'role': role,
         'created_at': FieldValue.serverTimestamp(),
         'uid': user!.uid,
+        'image': image,
       };
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set(userData);
         currentNumber = currentNumber + 1;
 
-          if (role == 'Learner') {
+          if (role == 'Flutter Learner' || role == 'UI/UX Learner' || role == 'Tester Learner') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => LearnerScreen(userData: userData)),
             );
-          } else if (role == 'Instructor') {
+          } else if (role == 'Flutter Instructor' || role == 'UI/UX Instructor' || role == 'Tester Instructor') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => const InstructorScreen()),
             );
-          } else if (role == 'Mentor') {
+          } else if (role == 'Flutter Mentor' || role == 'UI/UX Mentor' || role == 'Tester Mentor') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
