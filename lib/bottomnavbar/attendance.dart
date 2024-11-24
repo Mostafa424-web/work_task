@@ -21,7 +21,8 @@ class AttendanceViewState extends State<AttendanceView> {
               // this qr will contains ( username - role )
               // in the "data" parameter
               data: '''
-              ${widget.userData!['name']}
+              ${widget.userData!['name']},
+              ${widget.userData!['role']},
               ''',
               version: QrVersions.auto,
               size: 200.0,

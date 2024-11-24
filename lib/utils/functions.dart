@@ -38,11 +38,19 @@ void showCustomSnackBar({
   );
 }
 
-InputDecoration customInputDecoration({required String hintText, required IconData icon, IconData? suffix}) {
+InputDecoration customInputDecoration(
+    {required String hintText, required IconData icon, IconData? suffix}) {
   return InputDecoration(
     hintText: hintText,
-    suffixIcon: Icon(suffix,color: const Color(0xff4F94BF),),
-    prefixIcon: Icon(icon,size: 24,color: const Color(0xff4F94BF),),
+    suffixIcon: Icon(
+      suffix,
+      color: const Color(0xff4F94BF),
+    ),
+    prefixIcon: Icon(
+      icon,
+      size: 24,
+      color: const Color(0xff4F94BF),
+    ),
     fillColor: Colors.white.withOpacity(0.7),
     filled: true,
     border: OutlineInputBorder(
@@ -52,7 +60,13 @@ InputDecoration customInputDecoration({required String hintText, required IconDa
 }
 
 Future<User?> signUpWithEmailAndPassword(
-    String name, String email, String password, context, String? role, File? image, String passwordRole) async {
+    String name,
+    String email,
+    String password,
+    context,
+    String? role,
+    File? image,
+    String passwordRole) async {
   int currentNumber = 1;
   try {
     // Check if email, password or name is empty
@@ -62,90 +76,116 @@ Future<User?> signUpWithEmailAndPassword(
       );
       return null;
     } else {
-          if ((role == 'Flutter Learner' || role == 'UI/UX Learner' || role == 'Tester Learner') && passwordRole == '444') {
-            UserCredential userCredential =
+      if ((role == 'Flutter Learner' ||
+              role == 'UI/UX Learner' ||
+              role == 'Tester Learner') &&
+          passwordRole == '444') {
+        UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
-              email: email,
-              password: password,
-            );
-            User? user = userCredential.user;
-            Map<String, dynamic> userData = {
-              'number': currentNumber,
-              'name': name,
-              'email': email,
-              'role': role,
-              'created_at': FieldValue.serverTimestamp(),
-              'uid': user!.uid,
-              'image': image ?? '',
-            };
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).set(userData);
-            currentNumber = currentNumber + 1;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BottomNavBarScreen(userData: userData,)),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Welcome, ${user.email}!")),
-            );
-            return user;
-          } else if ((role == 'Flutter Instructor' || role == 'UI/UX Instructor' || role == 'Tester Instructor') && passwordRole == '555') {
-            UserCredential userCredential =
+          email: email,
+          password: password,
+        );
+        User? user = userCredential.user;
+        Map<String, dynamic> userData = {
+          'number': currentNumber,
+          'name': name,
+          'email': email,
+          'role': role,
+          'created_at': FieldValue.serverTimestamp(),
+          'uid': user!.uid,
+          'image': image ?? '',
+        };
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userData);
+        currentNumber = currentNumber + 1;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNavBarScreen(
+                    userData: userData,
+                  )),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Welcome, ${user.email}!")),
+        );
+        return user;
+      } else if ((role == 'Flutter Instructor' ||
+              role == 'UI/UX Instructor' ||
+              role == 'Tester Instructor') &&
+          passwordRole == '555') {
+        UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
-              email: email,
-              password: password,
-            );
-            User? user = userCredential.user;
-            Map<String, dynamic> userData = {
-              'number': currentNumber,
-              'name': name,
-              'email': email,
-              'role': role,
-              'created_at': FieldValue.serverTimestamp(),
-              'uid': user!.uid,
-              'image': image ?? '',
-            };
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).set(userData);
-            currentNumber = currentNumber + 1;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BottomNavBarScreen(userData: userData,)),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Welcome, ${user.email}!")),
-            );
-            return user;
-          } else if ((role == 'Flutter Mentor' || role == 'UI/UX Mentor' || role == 'Tester Mentor') && passwordRole == '666') {
-            UserCredential userCredential =
+          email: email,
+          password: password,
+        );
+        User? user = userCredential.user;
+        Map<String, dynamic> userData = {
+          'number': currentNumber,
+          'name': name,
+          'email': email,
+          'role': role,
+          'created_at': FieldValue.serverTimestamp(),
+          'uid': user!.uid,
+          'image': image ?? '',
+        };
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userData);
+        currentNumber = currentNumber + 1;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNavBarScreen(
+                    userData: userData,
+                  )),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Welcome, ${user.email}!")),
+        );
+        return user;
+      } else if ((role == 'Flutter Mentor' ||
+              role == 'UI/UX Mentor' ||
+              role == 'Tester Mentor') &&
+          passwordRole == '666') {
+        UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
-              email: email,
-              password: password,
-            );
-            User? user = userCredential.user;
-            Map<String, dynamic> userData = {
-              'number': currentNumber,
-              'name': name,
-              'email': email,
-              'role': role,
-              'created_at': FieldValue.serverTimestamp(),
-              'uid': user!.uid,
-              'image': image ?? '',
-            };
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).set(userData);
-            currentNumber = currentNumber + 1;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BottomNavBarScreen(userData: userData,)),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Welcome, ${user.email}!")),
-            );
-            return user;
-          } else {
-            showCustomSnackBar(context: context, message: "Invalid role or password role selected.");
-          }
+          email: email,
+          password: password,
+        );
+        User? user = userCredential.user;
+        Map<String, dynamic> userData = {
+          'number': currentNumber,
+          'name': name,
+          'email': email,
+          'role': role,
+          'created_at': FieldValue.serverTimestamp(),
+          'uid': user!.uid,
+          'image': image ?? '',
+        };
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userData);
+        currentNumber = currentNumber + 1;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNavBarScreen(
+                    userData: userData,
+                  )),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Welcome, ${user.email}!")),
+        );
+        return user;
+      } else {
+        showCustomSnackBar(
+            context: context,
+            message: "Invalid role or password role selected.");
+      }
     }
   } on FirebaseAuthException catch (e) {
     // Handle Firebase auth errors
