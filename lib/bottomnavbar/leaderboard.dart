@@ -1,32 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardView extends StatefulWidget {
+  const LeaderboardView({super.key,required this.userData});
+  final Map<String, dynamic>? userData;
+
   @override
   _LeaderboardViewState createState() => _LeaderboardViewState();
 }
 
 class _LeaderboardViewState extends State<LeaderboardView> {
   String selectedCategory = 'UI/UX'; // Default category
+  List<Map<String, dynamic>> studentData = [];
+  bool isLoading = true;
 
   // default data
-  final List<Map<String, dynamic>> studentData = [
-    {'name': 'Ahmed Hesham', 'category': 'UI/UX', 'score': 100},
-    {'name': 'Sara Ali', 'category': 'Flutter', 'score': 95},
-    {'name': 'Mohamed Salah', 'category': 'Testing', 'score': 90},
-    {'name': 'Laila Mostafa', 'category': 'UI/UX', 'score': 85},
-    {'name': 'Omar Khaled', 'category': 'Flutter', 'score': 80},
-  ];
-
   @override
   Widget build(BuildContext context) {
     // Filter data based on the selected category
-    final filteredData = studentData
-        .where((student) => student['category'] == selectedCategory)
-        .toList();
-
+    // final filteredData = studentData
+    //     .where((student) => student['category'] == selectedCategory)
+    //     .toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Students'),
+        title: const Text('Students'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,44 +31,54 @@ class _LeaderboardViewState extends State<LeaderboardView> {
           // Category Selection Chips
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: ['UI/UX', 'Flutter', 'Testing'].map((category) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: ChoiceChip(
-                    label: Text(category),
-                    selected: selectedCategory == category,
-                    onSelected: (isSelected) {
-                      if (isSelected) {
-                        setState(() {
-                          selectedCategory = category;
-                        });
-                      }
-                    },
-                  ),
-                );
-              }).toList(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: ['UI/UX Learner', 'Flutter Learner', 'Tester Learner'].map((category) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ChoiceChip(
+                      label: Text(category),
+                      selected: selectedCategory == category,
+                      onSelected: (isSelected) {
+                        if (isSelected) {
+                          setState(() {
+                            selectedCategory = category;
+                          });
+                          fetchStudentsByCategory(category);
+                        }
+                      },
+                    ),
+                  );//
+                }).toList(),
+              ),
             ),
           ),
           const SizedBox(height: 8),
 
           // Student List
-          Expanded(
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : studentData.isEmpty
+              ? const Center(child:
+                  Text("No students found."),
+              )
+              : Expanded(
             child: ListView.builder(
-              itemCount: filteredData.length,
+              itemCount: studentData.length,
               itemBuilder: (context, index) {
-                final student = filteredData[index];
+                final student = studentData[index];
                 return Card(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                         /* backgroundImage: NetworkImage(
                           'image from firestore'), */ // Replace with actual image URLs
                         ),
                     title: Text(student['name']),
-                    subtitle: Text('${student['category']} - Level 1'),
-                    trailing: Text('Score ${student['score']}'),
+                    subtitle: Text('${student['role']} - Level 1'),
+                    trailing: Text('Score ${student['number']}'),
                   ),
                 );
               },
@@ -80,5 +87,34 @@ class _LeaderboardViewState extends State<LeaderboardView> {
         ],
       ),
     );
+  }
+
+  Future<void> fetchStudentsByCategory(String category) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Query Firestore for students with the selected category
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users') // Firestore collection name
+          .where('role', isEqualTo: category)
+          .get();
+
+      // Extract data from Firestore
+      final fetchedData = querySnapshot.docs.map((doc) {
+        return doc.data() as Map<String, dynamic>;
+      }).toList();
+
+      setState(() {
+        studentData = fetchedData;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

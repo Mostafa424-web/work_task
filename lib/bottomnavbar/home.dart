@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HomeScreenView extends StatefulWidget {
+  const HomeScreenView({super.key, required this.userData});
+  final Map<String, dynamic>? userData;
   @override
   State<HomeScreenView> createState() => _HomeScreenViewState();
 }
@@ -12,7 +14,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       body: Stack(
         children: [
           // Positioned text in the top-right corner
-          const Positioned(
+          Positioned(
             top: 16,
             right: 16,
             child: SafeArea(
@@ -21,16 +23,16 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                     CrossAxisAlignment.end, // Align text to the right
                 children: [
                   Text(
-                    "Hello: Username", // Replace "Username" dynamically
-                    style: TextStyle(
+                    "Hello: ${widget.userData!['name']}", // Replace "Username" dynamically
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 4), // Small space between the texts
                   Text(
-                    "role: flutter",
-                    style: TextStyle(
+                    "role: ${widget.userData!['role']}",
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),

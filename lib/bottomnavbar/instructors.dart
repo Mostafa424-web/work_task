@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class InstructorsView extends StatefulWidget {
-  const InstructorsView({super.key});
-
+  const InstructorsView({super.key,required this.userData});
+  final Map<String, dynamic>? userData;
   @override
   State<InstructorsView> createState() => _InstructorsViewState();
 }

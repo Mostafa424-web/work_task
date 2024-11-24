@@ -16,8 +16,7 @@ class _AdminLeaderboardViewState extends State<AdminLeaderboardView> {
       (index) => {
         "name": "Ahmed Hesham",
         "role": "UI/UX - Level 1 - 10",
-        "imageUrl":
-            "https://via.placeholder.com/150" // Replace with actual image URLs
+        "imageUrl": "https://via.placeholder.com/150" // Replace with actual image URLs
       },
     );
 

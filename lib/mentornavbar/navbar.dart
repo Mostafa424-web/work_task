@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:works/bottomnavbar/attendance.dart';
-import 'package:works/bottomnavbar/home.dart';
 import 'package:works/bottomnavbar/instructors.dart';
 import 'package:works/bottomnavbar/leaderboard.dart';
 import 'package:works/bottomnavbar/settings.dart';
@@ -34,8 +32,8 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
     screens = [
       AdminHomeScreenView(),
       AdminAttendanceView(userData: widget.userData,),
-      LeaderboardView(),
-      const InstructorsView(),
+      LeaderboardView(userData: widget.userData,),
+      InstructorsView(userData: widget.userData),
       SettingsView(userData: widget.userData,),
     ];
   }

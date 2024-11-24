@@ -56,13 +56,19 @@ Future<User?> signUpWithEmailAndPassword(
   int currentNumber = 1;
   try {
     // Check if email, password or name is empty
-    if (email.isEmpty || password.isEmpty || name.isEmpty) {
+    if (email.isEmpty || password.isEmpty || name.isEmpty || passwordRole.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter all required fields.')),
       );
       return null;
     } else {
-          if ((role == 'Flutter Learner' || role == 'UI/UX Learner' || role == 'Tester Learner') && passwordRole == '444') {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('pwdrole')
+          .doc('flutterlearner')
+          .get();
+      final data = docSnapshot.data();
+          if ((role == 'Flutter Learner' || role == 'UI/UX Learner' || role == 'Tester Learner') && passwordRole == data!['flutterlearner'].toString())
+          {
             UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email: email,
@@ -89,7 +95,7 @@ Future<User?> signUpWithEmailAndPassword(
               SnackBar(content: Text("Welcome, ${user.email}!")),
             );
             return user;
-          } else if ((role == 'Flutter Instructor' || role == 'UI/UX Instructor' || role == 'Tester Instructor') && passwordRole == '555') {
+          } else if ((role == 'Flutter Instructor' || role == 'UI/UX Instructor' || role == 'Tester Instructor') && passwordRole == data!['testerlearner'].toString()) {
             UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email: email,
@@ -116,7 +122,7 @@ Future<User?> signUpWithEmailAndPassword(
               SnackBar(content: Text("Welcome, ${user.email}!")),
             );
             return user;
-          } else if ((role == 'Flutter Mentor' || role == 'UI/UX Mentor' || role == 'Tester Mentor') && passwordRole == '666') {
+          } else if ((role == 'Flutter Mentor' || role == 'UI/UX Mentor' || role == 'Tester Mentor') && passwordRole == data!['uiuxlearner'].toString()) {
             UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email: email,
@@ -138,9 +144,6 @@ Future<User?> signUpWithEmailAndPassword(
               context,
               MaterialPageRoute(
                   builder: (context) => BottomNavBarScreen(userData: userData,)),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Welcome, ${user.email}!")),
             );
             return user;
           } else {
