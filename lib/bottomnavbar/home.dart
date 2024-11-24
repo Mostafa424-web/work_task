@@ -12,7 +12,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       body: Stack(
         children: [
           // Positioned text in the top-right corner
-          Positioned(
+          const Positioned(
             top: 16,
             right: 16,
             child: SafeArea(
@@ -27,7 +27,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4), // Small space between the texts
+                  SizedBox(height: 4), // Small space between the texts
                   Text(
                     "role: flutter",
                     style: TextStyle(
@@ -57,22 +57,29 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                     GestureDetector(
                       onTap: () {
                         // open alert dialog
+                        showPasswordDialog(context);
                         // enter level password
                       },
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.blue,
-                        child: Text(
-                          'Level 1',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff0086CC),
+                          borderRadius: BorderRadius.circular(49)
+                        ),
+                        child: const CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.white,
+                          child: Text(
+                            'Level 1',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    Positioned(
+                    const Positioned(
                       right: 0,
                       bottom: 0,
                       child: CircleAvatar(
@@ -87,7 +94,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                 const SizedBox(height: 50),
 
                 // Level 2
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.blue,
                   child: Text(
@@ -100,9 +107,8 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                   ),
                 ),
                 const SizedBox(height: 50),
-
                 // Level 3
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.blue,
                   child: Text(
@@ -121,4 +127,44 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       ),
     );
   }
+}
+
+
+void showPasswordDialog(BuildContext context) {
+  final TextEditingController passwordController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Enter Password"),
+        content: TextField(
+          controller: passwordController,
+          obscureText: true,
+          decoration: const InputDecoration(
+            hintText: "Password",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Handle cancel action
+              Navigator.of(context).pop();
+            },
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Handle password submission
+              final enteredPassword = passwordController.text;
+              Navigator.of(context).pop(); // Close the dialog
+              print("Password entered: $enteredPassword");
+            },
+            child: const Text("Submit"),
+          ),
+        ],
+      );
+    },
+  );
 }

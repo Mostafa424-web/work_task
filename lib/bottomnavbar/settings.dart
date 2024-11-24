@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
+  const SettingsView({super.key, required this.userData});
+  final Map<String, dynamic>? userData;
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }
@@ -44,16 +46,16 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text(
-                      'Nada Ahmed',
+                      widget.userData!['name'],
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'UI/UX - Level 2 - 90',
+                      widget.userData!['role'],
                       style: TextStyle(
                         color: Colors.grey,
                       ),
@@ -66,7 +68,7 @@ class _SettingsViewState extends State<SettingsView> {
               // User Information Fields
               _buildEditableField(
                 label: 'User name',
-                value: 'Nada Ahmed',
+                value: widget.userData!['name'],
                 onTap: () {
                   print('Edit username');
                 },
@@ -82,7 +84,7 @@ class _SettingsViewState extends State<SettingsView> {
               const SizedBox(height: 16),
               _buildEditableField(
                 label: 'Email',
-                value: 'ts21@gmail.com',
+                value: widget.userData!['email'],
                 onTap: () {
                   print('Edit email');
                 },

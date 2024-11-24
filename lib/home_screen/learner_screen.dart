@@ -12,7 +12,7 @@ class LearnerScreen extends StatelessWidget {
                 leading: const Icon(Icons.person),
                 title: Text(userData!['name'] ?? 'Your Name'),
                 subtitle: Text((userData!['number']).toString() ?? 'N/A'),
-                trailing: Text(userData!['Your Role'] ?? 'Role'),
+                trailing: Text(userData!['role'] ?? 'Role'),
               ),
     );
   }

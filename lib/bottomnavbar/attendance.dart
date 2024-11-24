@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class AttendanceView extends StatefulWidget {
-  const AttendanceView({super.key});
+  const AttendanceView({super.key, required this.userData});
 
+  final Map<String, dynamic>? userData;
   @override
   State<AttendanceView> createState() => AttendanceViewState();
 }
@@ -19,7 +20,9 @@ class AttendanceViewState extends State<AttendanceView> {
             QrImageView(
               // this qr will contains ( username - role )
               // in the "data" parameter
-              data: 'username - role',
+              data: '''
+              ${widget.userData!['name']}
+              ''',
               version: QrVersions.auto,
               size: 200.0,
             ),

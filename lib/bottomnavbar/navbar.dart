@@ -6,14 +6,15 @@ import 'package:works/bottomnavbar/leaderboard.dart';
 import 'package:works/bottomnavbar/settings.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
-  const BottomNavBarScreen({super.key});
+  const BottomNavBarScreen({super.key, required this.userData});
+  final Map<String, dynamic>? userData;
 
   @override
   State<BottomNavBarScreen> createState() => _BottomNavBarScreenState();
 }
 
 class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
-  /* 
+  /*
   NOTE: when i move these above the override it works 
   when it was after the build {
   it doesnt't work 
@@ -30,10 +31,10 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
     super.initState();
     screens = [
       HomeScreenView(),
-      AttendanceView(),
+      AttendanceView(userData: widget.userData),
       LeaderboardView(),
-      InstructorsView(),
-      SettingsView(),
+      const InstructorsView(),
+      SettingsView(userData: widget.userData),
     ];
   }
 
