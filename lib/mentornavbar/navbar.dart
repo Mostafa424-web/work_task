@@ -8,7 +8,8 @@ import 'package:works/mentornavbar/attendance.dart';
 import 'package:works/mentornavbar/home.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
-  const BottomNavBarScreen({super.key});
+  const BottomNavBarScreen({super.key, required this.userData});
+  final Map<String, dynamic>? userData;
 
   @override
   State<BottomNavBarScreen> createState() => _BottomNavBarScreenState();
@@ -32,10 +33,10 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
     super.initState();
     screens = [
       AdminHomeScreenView(),
-      AdminAttendanceView(),
+      AdminAttendanceView(userData: widget.userData,),
       LeaderboardView(),
-      InstructorsView(),
-      SettingsView(),
+      const InstructorsView(),
+      SettingsView(userData: widget.userData,),
     ];
   }
 

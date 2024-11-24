@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AdminAttendanceView extends StatefulWidget {
-  const AdminAttendanceView({super.key});
+  const AdminAttendanceView({super.key, required this.userData});
+  final Map<String, dynamic>? userData;
 
   @override
   State<AdminAttendanceView> createState() => _AdminAttendanceViewState();
@@ -13,13 +14,13 @@ class _AdminAttendanceViewState extends State<AdminAttendanceView> {
     // Example data
     final checkInDetails = [
       {
-        "userName": "Ahmed Khaled",
-        "role": "Mentor UI/UX",
+        "userName": widget.userData!['name'],
+        "role": widget.userData!['role'],
         "dateTime": "mm/dd/yy : 12:15 PM"
       },
       {
-        "userName": "Ahmed Khaled",
-        "role": "Mentor UI/UX",
+        "userName": widget.userData!['name'],
+        "role": widget.userData!['role'],
         "dateTime": "mm/dd/yy : 12:15 PM"
       },
       {
