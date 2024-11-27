@@ -1,11 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:works/mentornavbar/tryqrcode.dart';
 import 'package:works/sign/sign_up.dart';
 
 import 'bottomnavbar/navbar.dart';
 import 'firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const SignUp(),
+      home: QRScannerScreen(),
+      //const SignUp(),
     );
   }
 }
-
