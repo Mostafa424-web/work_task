@@ -44,29 +44,32 @@ class QuizScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: 30,),
                 // Options
-                Column(
-                  children: [
-                    AnswerOption(
-                      text:
-                          "UI is about how the product looks, while UX is about how it works and feels. Both work together to create a seamless and engaging product.",
-                    ),
-                    SizedBox(height: 10),
-                    AnswerOption(
-                      text:
-                          "UI is about the functionality of a product, and UX is about the visual design.",
-                    ),
-                    SizedBox(height: 10),
-                    AnswerOption(
-                      text:
-                          "UX is only concerned with the usability of a product, while UI handles the interaction design.",
-                    ),
-                    SizedBox(height: 10),
-                    AnswerOption(
-                      text:
-                          "UI is about the content structure, and UX is about the code behind the product.",
-                    ),
-                  ],
+                Expanded(
+                  child: ListView(
+                    children: [
+                      AnswerOption(
+                        text:
+                            "UI is about how the product looks, while UX is about how it works and feels. Both work together to create a seamless and engaging product.",
+                      ),
+                      SizedBox(height: 10),
+                      AnswerOption(
+                        text:
+                            "UI is about the functionality of a product, and UX is about the visual design.",
+                      ),
+                      SizedBox(height: 10),
+                      AnswerOption(
+                        text:
+                            "UX is only concerned with the usability of a product, while UI handles the interaction design.",
+                      ),
+                      SizedBox(height: 10),
+                      AnswerOption(
+                        text:
+                            "UI is about the content structure, and UX is about the code behind the product.",
+                      ),
+                    ],
+                  ),
                 ),
                 // Next Button
                 ElevatedButton(

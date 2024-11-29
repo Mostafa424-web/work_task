@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardView extends StatefulWidget {
-  const LeaderboardView({super.key,required this.userData});
+  const LeaderboardView({super.key, required this.userData});
   final Map<String, dynamic>? userData;
 
   @override
@@ -10,17 +10,13 @@ class LeaderboardView extends StatefulWidget {
 }
 
 class _LeaderboardViewState extends State<LeaderboardView> {
-  String selectedCategory = 'UI/UX'; // Default category
+  String selectedCategory = 'UI/UX Learner'; // Default category
   List<Map<String, dynamic>> studentData = [];
   bool isLoading = true;
 
   // default data
   @override
   Widget build(BuildContext context) {
-    // Filter data based on the selected category
-    // final filteredData = studentData
-    //     .where((student) => student['category'] == selectedCategory)
-    //     .toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Students'),
@@ -34,7 +30,8 @@ class _LeaderboardViewState extends State<LeaderboardView> {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: ['UI/UX Learner', 'Flutter Learner', 'Tester Learner'].map((category) {
+                children: ['UI/UX Learner', 'Flutter Learner', 'Tester Learner']
+                    .map((category) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ChoiceChip(
@@ -49,41 +46,56 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                         }
                       },
                     ),
-                  );//
+                  ); //
                 }).toList(),
               ),
             ),
           ),
           const SizedBox(height: 8),
-
           // Student List
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : studentData.isEmpty
-              ? const Center(child:
-                  Text("No students found."),
-              )
-              : Expanded(
-            child: ListView.builder(
-              itemCount: studentData.length,
-              itemBuilder: (context, index) {
-                final student = studentData[index];
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                        /* backgroundImage: NetworkImage(
+          StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .where('role', isEqualTo: selectedCategory)
+                          // .orderBy('created_at', descending: true)
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Center(
+                              child: Text("No students found."));
+                        }
+                        final studentData = snapshot.data!.docs
+                            .map((doc) => doc.data() as Map<String, dynamic>)
+                            .toList();
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: studentData.length,
+                            itemBuilder: (context, index) {
+                              final student = studentData[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                child: ListTile(
+                                  leading: const CircleAvatar(
+                                      /* backgroundImage: NetworkImage(
                           'image from firestore'), */ // Replace with actual image URLs
-                        ),
-                    title: Text(student['name']),
-                    subtitle: Text('${student['role']} - Level 1'),
-                    trailing: Text('Score ${student['number']}'),
-                  ),
-                );
-              },
-            ),
-          ),
+                                      ),
+                                  title: Text(student['name']),
+                                  subtitle:
+                                      Text('${student['role']} - Level 1'),
+                                  trailing: Text('Score ${student['number']}'),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      })
         ],
       ),
     );
@@ -99,6 +111,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users') // Firestore collection name
           .where('role', isEqualTo: category)
+          .orderBy('created_at', descending: true)
           .get();
 
       // Extract data from Firestore
