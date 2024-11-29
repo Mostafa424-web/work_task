@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: QRScannerScreen(),
+      home: const SignUp(),
       //const SignUp(),
     );
   }

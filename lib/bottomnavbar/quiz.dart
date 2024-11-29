@@ -88,6 +88,12 @@ class QuizScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                /* 
+                - at the end of the questions show a dialog contains 
+                - [ score - wrong question was q2 - the answer was c - 
+                return home
+                ]
+                 */
               ],
             ),
           ),
