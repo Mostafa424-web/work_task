@@ -83,49 +83,32 @@ Future<User?> signUpWithEmailAndPassword(
           .collection('pwdrole')
           .doc('passwords')
           .get();
-      User? user = await signup_handle(email, password);
-      Map<String, dynamic> userData = {
-        'number': currentNumber,
-        'name': name,
-        'email': email,
-        'role': role,
-        'created_at': FieldValue.serverTimestamp(),
-        'uid': user!.uid,
-        'image': image ?? '',
-      };
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set(userData);
+      final passrole = docSnapshot.data();
       currentNumber = currentNumber + 1;
-      if ((role == 'Flutter Learner' ||
-              role == 'UI/UX Learner' ||
-              role == 'Tester Learner') &&
-          passwordRole == docSnapshot.data()!['Flutter Learner']) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BottomNavBarScreen(
-                    userData: userData,
-                  )),
-        );
-        return user;
-      } else if ((role == 'Flutter Instructor' ||
-              role == 'UI/UX Instructor' ||
-              role == 'Tester Instructor') &&
-          passwordRole == docSnapshot.data()!['UIUX Learner']) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BottomNavBarScreen(
-                    userData: userData,
-                  )),
-        );
-        return user;
-      } else if ((role == 'Flutter Mentor' ||
+     if ((role == 'Flutter Mentor' ||
               role == 'UI/UX Mentor' ||
-              role == 'Tester Mentor') &&
-          passwordRole == docSnapshot.data()!['Tester Learner']) {
+              role == 'Tester Mentor' ||
+          role == 'Flutter Learner' ||
+          role == 'UI/UX Learner' ||
+          role == 'Tester Learner' ||
+          role == 'Flutter Instructor' ||
+          role == 'UI/UX Instructor' ||
+          role == 'Tester Instructor') &&
+          passwordRole == passrole![role]) {
+        User? user = await signup_handle(email, password);
+        Map<String, dynamic> userData = {
+          'number': currentNumber,
+          'name': name,
+          'email': email,
+          'role': role,
+          'created_at': FieldValue.serverTimestamp(),
+          'uid': user!.uid,
+          'image': image ?? '',
+        };
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userData);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

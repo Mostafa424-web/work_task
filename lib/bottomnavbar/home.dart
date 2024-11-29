@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:works/bottomnavbar/quiz.dart';
+import 'package:works/sign/sign_up.dart';
 
 class HomeScreenView extends StatefulWidget {
   const HomeScreenView({super.key, required this.userData});
@@ -11,6 +14,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Stack(
         children: [
           // Positioned text in the top-right corner
@@ -29,7 +33,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4), // Small space between the texts
+                  const SizedBox(height: 4), // Small space between the texts
                   Text(
                     "role: ${widget.userData!['role']}",
                     style: const TextStyle(
@@ -41,89 +45,26 @@ class _HomeScreenViewState extends State<HomeScreenView> {
               ),
             ),
           ),
-
           // Main content: Levels
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.center, // Center content vertically
-              crossAxisAlignment:
-                  CrossAxisAlignment.center, // Center content horizontally
-              children: [
-                // Level 1 with overlay image
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        // open alert dialog
-                        showPasswordDialog(context);
-                        // enter level password
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff0086CC),
-                          borderRadius: BorderRadius.circular(49)
-                        ),
-                        child: const CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.white,
-                          child: Text(
-                            'Level 1',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: CircleAvatar(
-                        radius: 15,
-                        /*  backgroundImage: NetworkImage(
-                          'https://via.placeholder.com/150', // Replace with actual image URL
-                        ), */
-                      ),
-                    ),
-                  ],
+          Column(
+            mainAxisAlignment:
+                MainAxisAlignment.center, // Center content vertically
+            crossAxisAlignment:
+                CrossAxisAlignment.center, // Center content horizontally
+            children: [
+              Flexible(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  itemCount: 12,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: LevelCard(level: index + 1, onTap: () => showPasswordDialog(context, index)),
+                      );
+                    }
                 ),
-                const SizedBox(height: 50),
-
-                // Level 2
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.blue,
-                  child: Text(
-                    'Level 2',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 50),
-                // Level 3
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.blue,
-                  child: Text(
-                    'Level 3',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              )
+            ],
           ),
         ],
       ),
@@ -131,37 +72,102 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   }
 }
 
+class LevelCard extends StatelessWidget {
+  final int level;
+  final VoidCallback onTap;
 
-void showPasswordDialog(BuildContext context) {
-  final TextEditingController passwordController = TextEditingController();
+  const LevelCard({
+    Key? key,
+    required this.level,
+    required this.onTap,
+  }) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController passLevelController = TextEditingController();
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xff0086CC),
+              borderRadius: BorderRadius.circular(150),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.white,
+              child: Text(
+                'Level $level',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 155,
+            bottom: 10,
+            child: Icon(
+              Icons.lock, // Example icon, replace if needed
+              color: Colors.grey[700],
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+final TextEditingController passLevelController = TextEditingController();
+String passLevel = '';
+void showPasswordDialog(BuildContext context, int index) {
   showDialog(
     context: context,
-    builder: (BuildContext context) {
+    builder: (context) {
       return AlertDialog(
         title: const Text("Enter Password"),
         content: TextField(
-          controller: passwordController,
-          obscureText: true,
+          controller: passLevelController,
           decoration: const InputDecoration(
-            hintText: "Password",
-            border: OutlineInputBorder(),
+            hintText: "Enter level password",
           ),
+          onChanged: (value) {
+            passLevel = passLevelController.text.trim();
+          },
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              // Handle cancel action
-              Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.pop(context),
             child: const Text("Cancel"),
           ),
-          ElevatedButton(
-            onPressed: () {
-              // Handle password submission
-              final enteredPassword = passwordController.text;
-              Navigator.of(context).pop(); // Close the dialog
-              print("Password entered: $enteredPassword");
+          TextButton(
+            onPressed: () async{
+              // Perform validation
+              DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+                  .collection('pwdrole')
+              .doc('password_level')// Firestore collection name
+                  .get();
+              Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
+              if (data == null || data['Level $index'] == null) {
+                print('Field does not exist');
+                return;
+              }
+              else if (passLevelController.text.trim() == data['Level ${index + 1}']) {
+                print('Password correct for Level ${index + 1}');
+                passLevelController.dispose();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => QuizScreen()),
+                );
+
+              } else {
+                print('Incorrect Pass');
+              }
             },
             child: const Text("Submit"),
           ),
@@ -170,3 +176,5 @@ void showPasswordDialog(BuildContext context) {
     },
   );
 }
+
+

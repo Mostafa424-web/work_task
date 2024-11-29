@@ -43,7 +43,17 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> roles = ['Flutter Instructor', 'Flutter Learner', 'Flutter Mentor', 'UI/UX Instructor', 'UI/UX Learner', 'UI/UX Mentor', 'Tester Instructor', 'Tester Learner', 'Tester Mentor'];
+    final List<String> roles = [
+      'Flutter Instructor',
+      'Flutter Learner',
+      'Flutter Mentor',
+      'UI/UX Instructor',
+      'UI/UX Learner',
+      'UI/UX Mentor',
+      'Tester Instructor',
+      'Tester Learner',
+      'Tester Mentor'
+    ];
     return Scaffold(
       body: Center(
         child: ListView(
@@ -60,51 +70,55 @@ class _SignUpState extends State<SignUp> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 _selectedImage != null
                     ? Stack(
-                      children: [
-                        CircleAvatar(
+                        children: [
+                          CircleAvatar(
                             radius: 75,
                             backgroundImage: FileImage(
                               _selectedImage!,
                               // fit: BoxFit.cover,
                             ),
                           ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: GestureDetector(
-                            onTap: _pickImage, // Trigger image picker on tap
-                            child: const CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.blue,
-                              child: Icon(Icons.camera_alt_outlined, color: Colors.white),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: GestureDetector(
+                              onTap: _pickImage, // Trigger image picker on tap
+                              child: const CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.blue,
+                                child: Icon(Icons.camera_alt_outlined,
+                                    color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
+                        ],
+                      )
                     : Stack(
-                      children: [
-                        const CircleAvatar(
+                        children: [
+                          const CircleAvatar(
                             radius: 75,
                             child: Icon(Icons.person, size: 50),
                           ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: GestureDetector(
-                            onTap: _pickImage, // Trigger image picker on tap
-                            child: const CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.blue,
-                              child: Icon(Icons.camera_alt_outlined, color: Colors.white),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: GestureDetector(
+                              onTap: _pickImage, // Trigger image picker on tap
+                              child: const CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.blue,
+                                child: Icon(Icons.camera_alt_outlined,
+                                    color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -170,18 +184,24 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                selectedRole != null ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextFormField(
-                    controller: passRoleController,
-                    obscureText: true,
-                    decoration: customInputDecoration(
-                        hintText: "password of Your role",
-                        icon: Icons.lock,
-                        suffix: Icons.remove_red_eye),
-                  ),
-                ) : const SizedBox(height: 2,),
-                const SizedBox(height: 20,),
+                selectedRole != null
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextFormField(
+                          controller: passRoleController,
+                          obscureText: true,
+                          decoration: customInputDecoration(
+                              hintText: "password of Your role",
+                              icon: Icons.lock,
+                              suffix: Icons.remove_red_eye),
+                        ),
+                      )
+                    : const SizedBox(
+                        height: 2,
+                      ),
+                const SizedBox(
+                  height: 20,
+                ),
                 SignButton(
                     text: 'Sign Up',
                     onPress: () async {
@@ -191,8 +211,8 @@ class _SignUpState extends State<SignUp> {
                           passController.text.trim(),
                           context,
                           selectedRole,
-                      _selectedImage,
-                      passRoleController.text.trim());
+                          _selectedImage,
+                          passRoleController.text.trim());
                     })
               ],
             ),
