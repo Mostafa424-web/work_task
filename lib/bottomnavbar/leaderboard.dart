@@ -10,7 +10,7 @@ class LeaderboardView extends StatefulWidget {
 }
 
 class _LeaderboardViewState extends State<LeaderboardView> {
-  String selectedCategory = 'UI/UX'; // Default category
+  String selectedCategory = 'UI/UX Learner'; // Default category
   List<Map<String, dynamic>> studentData = [];
   bool isLoading = true;
 
