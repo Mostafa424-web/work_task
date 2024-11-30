@@ -9,6 +9,10 @@ class AttendanceView extends StatefulWidget {
   State<AttendanceView> createState() => AttendanceViewState();
 }
 
+/* 
+- if the role == learner show him the qr code 
+- else the role == mentor || instructor show scanqrcodescreen
+*/
 class AttendanceViewState extends State<AttendanceView> {
   @override
   Widget build(BuildContext context) {

@@ -169,6 +169,12 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                   ),
                 ),
+                /* 
+                - at the end of the questions show a dialog contains 
+                - [ score - wrong question was q2 - the answer was c - 
+                return home
+                ]
+                 */
               ],
             ),
           );
