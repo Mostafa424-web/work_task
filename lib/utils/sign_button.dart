@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class SignButton extends StatelessWidget {
   final String text;
   final Function onPress;
-  const SignButton({super.key, required this.text, required this.onPress});
+  final bool loading;
+  const SignButton({super.key, required this.text, required this.onPress, required this.loading});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class SignButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
-        child: Text(
+        child: loading ? const CircularProgressIndicator() :Text(
           text,
           style: const TextStyle(
             fontSize: 28, // Text size

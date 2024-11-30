@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:works/home_screen/instructor_screen.dart';
 import 'package:works/sign/sign_up.dart';
-import '../home_screen/learner_screen.dart';
-import '../home_screen/mentor_screen.dart';
+import '../bottomnavbar/navbar.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
 
@@ -18,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+ bool loading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,9 +96,16 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 20,
             ),
             SignButton(
+              loading: loading,
                 text: 'LogIn',
                 onPress: () {
+                setState(() {
+                  loading != loading;
+                });
                   handleSignIn();
+                setState(() {
+                  loading != loading;
+                });
                 })
           ],
         ),
@@ -123,30 +128,15 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userDoc.exists) {
           Map<String, dynamic>? userData =
               userDoc.data() as Map<String, dynamic>?;
-          String? role = userData?['role'];
 
-          if (role == 'Flutter Learner' || role == 'UI/UX Learner' || role == 'Tester Learner') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => LearnerScreen(userData: userData)),
+                  builder: (context) => BottomNavBarScreen(userData: userData)),
             );
-          } else if (role == 'Instructor') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const InstructorScreen()),
-            );
-          } else if (role == 'Mentor') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MentorScreen()),
-            );
-          } else {
-            showCustomSnackBar(context: context, message: "Role is null.");
-          }
           // Navigate to the next screen after user creation
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Welcome, ${user.email}!")),
+            SnackBar(content: Text("Welcome Back , ${user.email}!")),
           );
         }
       }

@@ -10,6 +10,8 @@ class HomeScreenView extends StatefulWidget {
   State<HomeScreenView> createState() => _HomeScreenViewState();
 }
 
+String passLevel = '';
+
 class _HomeScreenViewState extends State<HomeScreenView> {
   @override
   Widget build(BuildContext context) {
@@ -54,15 +56,17 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             children: [
               Flexible(
                 child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  itemCount: 12,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    itemCount: 12,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LevelCard(level: index + 1, onTap: () => showPasswordDialog(context, index)),
+                        child: LevelCard(
+                            level: index + 1,
+                            onTap: () => showPasswordDialog(context, index,'${widget.userData!['role']}'),
+                            index: index, studentRole: '${widget.userData!['role']}',),
                       );
-                    }
-                ),
+                    }),
               )
             ],
           ),
@@ -75,11 +79,13 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 class LevelCard extends StatelessWidget {
   final int level;
   final VoidCallback onTap;
-
+  final int? index;
+  final String studentRole;
   const LevelCard({
     Key? key,
     required this.level,
     required this.onTap,
+    this.index, required this.studentRole,
   }) : super(key: key);
 
   @override
@@ -109,23 +115,26 @@ class LevelCard extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            right: 155,
-            bottom: 10,
-            child: Icon(
-              Icons.lock, // Example icon, replace if needed
-              color: Colors.grey[700],
-              size: 20,
-            ),
-          ),
+          passLevel != 'Level ${index! + 1}'
+              ? Positioned(
+                  right: MediaQuery.of(context).size.width * 0.4,
+                  bottom: 10,
+                  child: Icon(
+                    Icons.lock, // Example icon, replace if needed
+                    color: Colors.grey[700],
+                    size: 20,
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );
   }
 }
+
 final TextEditingController passLevelController = TextEditingController();
-String passLevel = '';
-void showPasswordDialog(BuildContext context, int index) {
+
+void showPasswordDialog(BuildContext context, int index, String role) {
   showDialog(
     context: context,
     builder: (context) {
@@ -146,25 +155,26 @@ void showPasswordDialog(BuildContext context, int index) {
             child: const Text("Cancel"),
           ),
           TextButton(
-            onPressed: () async{
+            onPressed: () async {
               // Perform validation
               DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
                   .collection('pwdrole')
-              .doc('password_level')// Firestore collection name
+                  .doc('password_level') // Firestore collection name
                   .get();
-              Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
-              if (data == null || data['Level $index'] == null) {
+              Map<String, dynamic>? data =
+                  docSnapshot.data() as Map<String, dynamic>?;
+              if (data == null || data['Level ${index + 1}'] == null) {
                 print('Field does not exist');
                 return;
-              }
-              else if (passLevelController.text.trim() == data['Level ${index + 1}']) {
+              } else if (passLevelController.text.trim() ==
+                  data['Level ${index + 1}']) {
                 print('Password correct for Level ${index + 1}');
-                passLevelController.dispose();
+                passLevel = 'Level ${index + 1}';
+                print(passLevel);
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => QuizScreen()),
+                  MaterialPageRoute(builder: (context) => QuizScreen(level: passLevel,role: role,)),
                 );
-
               } else {
                 print('Incorrect Pass');
               }
@@ -176,5 +186,3 @@ void showPasswordDialog(BuildContext context, int index) {
     },
   );
 }
-
-

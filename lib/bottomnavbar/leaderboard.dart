@@ -89,7 +89,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                                   title: Text(student['name']),
                                   subtitle:
                                       Text('${student['role']} - Level 1'),
-                                  trailing: Text('Score ${student['number']}'),
+                                  trailing: Text(
+                                    'Score \n ${student['score']}',
+                                  style: TextStyle(fontSize: 15),),
                                 ),
                               );
                             },

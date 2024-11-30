@@ -4,138 +4,152 @@ import 'package:flutter/material.dart';
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key, required this.userData});
   final Map<String, dynamic>? userData;
+
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
   TextEditingController nameController = TextEditingController();
-  bool read_only = true;
+  bool readOnly = true;
+
   @override
   void initState() {
     super.initState();
-    // Initialize controller with the initial value from Firestore
+    // Initialize the controller with the initial name value
     nameController = TextEditingController(text: widget.userData!['name']);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(widget.userData!['uid'])
-            .snapshots(),
-        builder: (context, snapshot) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Profile'),
-            ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Profile Picture and Name Section
-                    Center(
-                      child: Column(
-                        children: [
-                          const Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                /*  backgroundImage: NetworkImage(
-                                'firestore image'), // Replace with actual image URL */
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.blue,
-                                  radius: 15,
-                                  child: Icon(
-                                    Icons.edit,
-                                    color: Colors.white,
-                                    size: 15,
-                                  ),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userData!['uid'])
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+          return const Center(child: Text('Failed to load user data.'));
+        }
+
+        // Get user data dynamically from Firestore
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Profile'),
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Profile Picture and Name Section
+                  Center(
+                    child: Column(
+                      children: [
+                        const Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              /* backgroundImage: NetworkImage(
+                              'firestore image'), */ // Replace with actual image URL
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                radius: 15,
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 15,
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            widget.userData!['name'],
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          userData['name'], // Display updated name dynamically
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            widget.userData!['role'],
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
+                        ),
+                        Text(
+                          userData['role'],
+                          style: const TextStyle(
+                            color: Colors.grey,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: TextFormField(
-                        controller: nameController,
-                        readOnly: read_only,
-                        decoration: InputDecoration(
-                          labelText: 'User Name',
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                read_only = !read_only;
-                                if (read_only) {
-                                  // Update Firestore only when exiting edit mode
-                                  updateNameInFirestore(nameController.text);
-                                }
-                              });
-                            },
-                            icon: const Icon(Icons.edit),
-                            color: const Color(0xff4F94BF),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.person,
-                            size: 24,
-                            color: Color(0xff4F94BF),
-                          ),
-                          fillColor: Colors.white.withOpacity(0.7),
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                  ),
+                  const SizedBox(height: 24),
+                  // User Information Fields
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    child: TextFormField(
+                      controller: nameController,
+                      readOnly: readOnly,
+                      decoration: InputDecoration(
+                        labelText: 'User Name',
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              readOnly = !readOnly;
+                              if (readOnly) {
+                                // Update Firestore only when exiting edit mode
+                                updateNameInFirestore(nameController.text);
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.edit),
+                          color: const Color(0xff4F94BF),
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.person,
+                          size: 24,
+                          color: Color(0xff4F94BF),
+                        ),
+                        fillColor: Colors.white.withOpacity(0.7),
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
-                    // User Information Fields
-                    const SizedBox(height: 16),
-                    _buildEditableField(
-                      label: 'Password',
-                      value: '**********',
-                      onTap: () {
-                        print('Edit password');
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    _buildEditableField(
-                      label: 'Email',
-                      value: widget.userData!['email'],
-                      onTap: () {
-                        print('Edit email');
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEditableField(
+                    label: 'Password',
+                    value: '**********',
+                    onTap: () {
+                      print('Edit password');
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildEditableField(
+                    label: 'Email',
+                    value: userData['email'],
+                    onTap: () {
+                      print('Edit email');
+                    },
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   // Function to build editable fields

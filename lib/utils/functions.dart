@@ -65,7 +65,6 @@ Future<User?> signUpWithEmailAndPassword(
     String password,
     context,
     String? role,
-    File? image,
     String passwordRole) async {
   int currentNumber = 1;
   try {
@@ -85,15 +84,15 @@ Future<User?> signUpWithEmailAndPassword(
           .get();
       final passrole = docSnapshot.data();
       currentNumber = currentNumber + 1;
-     if ((role == 'Flutter Mentor' ||
+      if ((role == 'Flutter Mentor' ||
               role == 'UI/UX Mentor' ||
               role == 'Tester Mentor' ||
-          role == 'Flutter Learner' ||
-          role == 'UI/UX Learner' ||
-          role == 'Tester Learner' ||
-          role == 'Flutter Instructor' ||
-          role == 'UI/UX Instructor' ||
-          role == 'Tester Instructor') &&
+              role == 'Flutter Learner' ||
+              role == 'UI/UX Learner' ||
+              role == 'Tester Learner' ||
+              role == 'Flutter Instructor' ||
+              role == 'UI/UX Instructor' ||
+              role == 'Tester Instructor') &&
           passwordRole == passrole![role]) {
         User? user = await signup_handle(email, password);
         Map<String, dynamic> userData = {
@@ -103,7 +102,6 @@ Future<User?> signUpWithEmailAndPassword(
           'role': role,
           'created_at': FieldValue.serverTimestamp(),
           'uid': user!.uid,
-          'image': image ?? '',
         };
         await FirebaseFirestore.instance
             .collection('users')
