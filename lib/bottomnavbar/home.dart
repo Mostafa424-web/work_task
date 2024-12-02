@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:works/bottomnavbar/quiz.dart';
-import 'package:works/sign/sign_up.dart';
 
 class HomeScreenView extends StatefulWidget {
   const HomeScreenView({super.key, required this.userData});
@@ -82,15 +81,14 @@ class LevelCard extends StatelessWidget {
   final int? index;
   final String studentRole;
   const LevelCard({
-    Key? key,
+    super.key,
     required this.level,
     required this.onTap,
     this.index, required this.studentRole,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController passLevelController = TextEditingController();
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -134,7 +132,7 @@ class LevelCard extends StatelessWidget {
 
 final TextEditingController passLevelController = TextEditingController();
 
-void showPasswordDialog(BuildContext context, int index, String role) {
+void showPasswordDialog(BuildContext context, int index, String roleStudent) {
   showDialog(
     context: context,
     builder: (context) {
@@ -173,7 +171,7 @@ void showPasswordDialog(BuildContext context, int index, String role) {
                 print(passLevel);
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => QuizScreen(level: passLevel,role: role,)),
+                  MaterialPageRoute(builder: (context) => QuizScreen(level: passLevel,role: roleStudent,)),
                 );
               } else {
                 print('Incorrect Pass');

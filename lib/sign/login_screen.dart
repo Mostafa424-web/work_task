@@ -97,14 +97,21 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SignButton(
               loading: loading,
-                text: 'LogIn',
+                text: loading ? const Center(child: CircularProgressIndicator(),) : const Text(
+                  'LOGIN',
+                  style: TextStyle(
+                    fontSize: 28, // Text size
+                    color: Colors.white, // Text color
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 onPress: () {
                 setState(() {
-                  loading != loading;
+                  loading = true;
                 });
                   handleSignIn();
                 setState(() {
-                  loading != loading;
+                  loading = false;
                 });
                 })
           ],

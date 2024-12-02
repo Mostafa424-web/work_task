@@ -3,12 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({Key? key, required this.level, required this.role})
-      : super(key: key);
+  const QuizScreen({super.key, required this.level, required this.role});
+
 
   final String level;
   final String role;
-
   @override
   _QuizScreenState createState() => _QuizScreenState();
 }
@@ -24,8 +23,8 @@ class _QuizScreenState extends State<QuizScreen> {
       appBar: AppBar(),
       body: StreamBuilder<DocumentSnapshot<Object?>>(
         stream: FirebaseFirestore.instance
-            .collection('flutterquiz') // Your collection name
-            .doc('level1') // Your document ID
+            .collection('${widget.role} Quiz') // Your collection name
+            .doc(widget.level) // Your document ID
             .snapshots(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,14 +62,14 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10),
-                Divider(
+                const SizedBox(height: 10),
+                const Divider(
                   color: Colors.blue,
                   thickness: 2,
                   indent: 100,
                   endIndent: 100,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 // Display the current question
                 Text(
                   currentQuestion,
@@ -204,10 +203,10 @@ class AnswerOption extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Colors.black12,
             blurRadius: 6,
-            offset: const Offset(0, 3),
+            offset: Offset(0, 3),
           ),
         ],
       ),

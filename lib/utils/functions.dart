@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../bottomnavbar/navbar.dart';
 
 bool isValidEmail(String email, BuildContext context) {
   // Define the regex pattern for validating email ending with ".com"
@@ -73,9 +69,7 @@ Future<User?> signUpWithEmailAndPassword(
         password.isEmpty ||
         name.isEmpty ||
         passwordRole.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter all required fields.')),
-      );
+      showCustomSnackBar(message: 'Please enter all required fields.',context: context);
       return null;
     } else {
       final docSnapshot = await FirebaseFirestore.instance
@@ -88,7 +82,7 @@ Future<User?> signUpWithEmailAndPassword(
               role == 'UI/UX Mentor' ||
               role == 'Tester Mentor' ||
               role == 'Flutter Learner' ||
-              role == 'UI/UX Learner' ||
+              role == 'UIUX Learner' ||
               role == 'Tester Learner' ||
               role == 'Flutter Instructor' ||
               role == 'UI/UX Instructor' ||
@@ -107,12 +101,10 @@ Future<User?> signUpWithEmailAndPassword(
             .collection('users')
             .doc(user.uid)
             .set(userData);
-        Navigator.pushReplacement(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-              builder: (context) => BottomNavBarScreen(
-                    userData: userData,
-                  )),
+          '/bottomNav',
+          arguments: userData,
         );
         return user;
       } else {
@@ -124,18 +116,11 @@ Future<User?> signUpWithEmailAndPassword(
   } on FirebaseAuthException catch (e) {
     // Handle Firebase auth errors
     if (e.code == 'weak-password') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("The password provided is too weak.")),
-      );
+      showCustomSnackBar(message: "The password provided is too weak.",context: context);
     } else if (e.code == 'email-already-in-use') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("The account already exists for that email.")),
-      );
+      showCustomSnackBar(message: "The account already exists for that email.",context: context);
     } else if (e.code == 'invalid-email') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("The email address is not valid.")),
-      );
+      showCustomSnackBar(message: "The email address is not valid.",context: context);
     }
     return null;
   } catch (e) {

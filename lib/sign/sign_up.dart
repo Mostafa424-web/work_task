@@ -99,7 +99,7 @@ class _SignUpState extends State<SignUp> {
       'Flutter Learner',
       'Flutter Mentor',
       'UI/UX Instructor',
-      'UI/UX Learner',
+      'UIUX Learner',
       'UI/UX Mentor',
       'Tester Instructor',
       'Tester Learner',
@@ -258,7 +258,7 @@ class _SignUpState extends State<SignUp> {
                             builder: (context) => const LoginScreen()));
                   },
                   child: const Text(
-                    'LogIn',
+                    'LOGIN',
                     style: TextStyle(
                         color: Colors.black, fontSize: 20),
                   ),
@@ -268,10 +268,17 @@ class _SignUpState extends State<SignUp> {
                 ),
                 SignButton(
                   loading: loading,
-                    text: 'Sign Up',
+                    text: loading ? const Center(child: CircularProgressIndicator(),) : const Text(
+                      'Sign UP',
+                      style: TextStyle(
+                        fontSize: 28, // Text size
+                        color: Colors.white, // Text color
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     onPress: () async {
                       setState(() {
-                        loading != loading;
+                        loading = true;
                       });
                       await signUpWithEmailAndPassword(
                           nameController.text.trim(),
@@ -284,6 +291,9 @@ class _SignUpState extends State<SignUp> {
                         loading != loading;
                       });
                       await _uploadImage();
+                      setState(() {
+                        loading = false;
+                      });
                     })
               ],
             ),

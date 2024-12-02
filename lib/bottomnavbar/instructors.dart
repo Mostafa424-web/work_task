@@ -14,7 +14,7 @@ class _InstructorsViewState extends State<InstructorsView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'instructors hub',
           ),
           centerTitle: true,
@@ -22,7 +22,7 @@ class _InstructorsViewState extends State<InstructorsView> {
         body: SafeArea(
             child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             StreamBuilder(
@@ -65,7 +65,7 @@ class _InstructorsViewState extends State<InstructorsView> {
                           child: ListTile(
                             title: Text(instructor['name']),
                             subtitle: Text(instructor['role']),
-                            leading: CircleAvatar(
+                            leading: const CircleAvatar(
                               radius: 35,
                               backgroundColor: Colors.amber,
                             ),
@@ -73,7 +73,7 @@ class _InstructorsViewState extends State<InstructorsView> {
                               onPressed: () {
                                 // on press open an alert dialog
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.menu,
                               ),
                             ),

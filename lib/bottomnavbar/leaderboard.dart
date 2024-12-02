@@ -10,7 +10,7 @@ class LeaderboardView extends StatefulWidget {
 }
 
 class _LeaderboardViewState extends State<LeaderboardView> {
-  String selectedCategory = 'UI/UX Learner'; // Default category
+  String selectedCategory = 'UIUX Learner'; // Default category
   List<Map<String, dynamic>> studentData = [];
   bool isLoading = true;
 
@@ -30,7 +30,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: ['UI/UX Learner', 'Flutter Learner', 'Tester Learner']
+                children: ['UIUX Learner', 'Flutter Learner', 'Tester Learner']
                     .map((category) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -90,7 +90,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                                   subtitle:
                                       Text('${student['role']} - Level 1'),
                                   trailing: Text(
-                                    'Score \n ${student['score']}',
+                                    'Score \n ${student['score'] ?? '-'}',
                                   style: TextStyle(fontSize: 15),),
                                 ),
                               );

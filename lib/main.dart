@@ -1,9 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:works/mentornavbar/tryqrcode.dart';
-import 'package:works/sign/sign_up.dart';
+import 'package:works/utils/app_router.dart';
 
-import 'bottomnavbar/navbar.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -24,7 +22,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const SignUp(),
+      initialRoute: '/sign', // Set initial route
+      onGenerateRoute: AppRouter.generateRoute, // Use the centralized router
       //const SignUp(),
     );
   }
