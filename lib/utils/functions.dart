@@ -35,12 +35,17 @@ void showCustomSnackBar({
 }
 
 InputDecoration customInputDecoration(
-    {required String hintText, required IconData icon, IconData? suffix}) {
+    {required String hintText, required IconData icon, IconData? suffix , Function? onTap}) {
   return InputDecoration(
     hintText: hintText,
-    suffixIcon: Icon(
-      suffix,
-      color: const Color(0xff4F94BF),
+    suffixIcon: IconButton(
+      onPressed: (){
+        onTap!();
+      },
+      icon: Icon(
+        suffix,
+        color: const Color(0xff4F94BF),
+      ),
     ),
     prefixIcon: Icon(
       icon,

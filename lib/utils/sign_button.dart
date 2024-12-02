@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SignButton extends StatelessWidget {
-  final Widget text;
+  final String text;
   final Function onPress;
   final bool loading;
   const SignButton({super.key, required this.text, required this.onPress, required this.loading});
@@ -21,7 +21,14 @@ class SignButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
-        child: text,
+        child: loading ? const Center(child: CircularProgressIndicator(),) : const Text(
+          'Sign UP',
+          style: TextStyle(
+            fontSize: 28, // Text size
+            color: Colors.white, // Text color
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

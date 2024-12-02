@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:works/sign/sign_up.dart';
-import '../bottomnavbar/navbar.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
 
@@ -73,10 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUp()));
+                          '/sign');
                     },
                     child: Text(
                       'Sign Up',
@@ -97,14 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SignButton(
               loading: loading,
-                text: loading ? const Center(child: CircularProgressIndicator(),) : const Text(
-                  'LOGIN',
-                  style: TextStyle(
-                    fontSize: 28, // Text size
-                    color: Colors.white, // Text color
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                text: "LOGIN",
                 onPress: () {
                 setState(() {
                   loading = true;
@@ -136,15 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
           Map<String, dynamic>? userData =
               userDoc.data() as Map<String, dynamic>?;
 
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BottomNavBarScreen(userData: userData)),
-            );
-          // Navigate to the next screen after user creation
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Welcome Back , ${user.email}!")),
+          Navigator.pushNamed(
+            context,
+            '/bottomNav',
+            arguments: userData,
           );
+          // Navigate to the next screen after user creation
+          showCustomSnackBar(context: context, message: "Welcome Back , ${user.email}!");
         }
       }
     } catch (e) {

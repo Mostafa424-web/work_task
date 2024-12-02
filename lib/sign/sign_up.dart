@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'login_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -27,8 +26,8 @@ class _SignUpState extends State<SignUp> {
   final ImagePicker _picker = ImagePicker();
   bool loading = false;
   bool _isUploading = false;
+  bool showPassword = false;
   String? _image;
-
 
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -39,6 +38,7 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  // Function to turn file of image into url String
   Future<void> _uploadImage() async {
     if (_selectedImage == null) return;
 
@@ -49,7 +49,8 @@ class _SignUpState extends State<SignUp> {
     try {
       // Generate a unique file name
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageRef = FirebaseStorage.instance.ref().child('images/$fileName');
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child('images/$fileName');
 
       // Upload the file to Firebase Storage
       UploadTask uploadTask = storageRef.putFile(_selectedImage!);
@@ -60,21 +61,20 @@ class _SignUpState extends State<SignUp> {
       // Get the download URL
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
-      _image = downloadUrl;
-      print(_image);
+      // _image = downloadUrl;
       // // Save the URL to Firestore
-      await FirebaseFirestore.instance.collection('users').doc('yourUserId').update({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
         'image': downloadUrl,
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Image uploaded successfully!')),
-      );
-
+      showCustomSnackBar(
+          context: context, message: 'Image uploaded successfully!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to upload image: $e')),
-      );
+      showCustomSnackBar(
+          context: context, message: 'Failed to upload image: $e');
+      print('Failed to upload image: $e');
     } finally {
       setState(() {
         _isUploading = false;
@@ -197,16 +197,22 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextFormField(
-                    controller: passController,
-                    obscureText: true,
-                    decoration: customInputDecoration(
-                        hintText: "password",
-                        icon: Icons.lock,
-                        suffix: Icons.remove_red_eye),
-                  ),
-                ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TextFormField(
+                      controller: passController,
+                      obscureText: showPassword,
+                      decoration: customInputDecoration(
+                          hintText: "password",
+                          icon: Icons.lock,
+                          onTap: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                          suffix: showPassword
+                              ? FontAwesomeIcons.eyeSlash
+                              : FontAwesomeIcons.eye),
+                    )),
                 const SizedBox(
                   height: 20,
                 ),
@@ -244,7 +250,9 @@ class _SignUpState extends State<SignUp> {
                           decoration: customInputDecoration(
                               hintText: "password of Your role",
                               icon: Icons.lock,
-                              suffix: Icons.remove_red_eye),
+                              suffix: showPassword
+                                  ? FontAwesomeIcons.eyeSlash
+                                  : FontAwesomeIcons.eye),
                         ),
                       )
                     : const SizedBox(
@@ -252,30 +260,22 @@ class _SignUpState extends State<SignUp> {
                       ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()));
+                    Navigator.pushNamed(
+                      context,
+                      '/login',
+                    );
                   },
                   child: const Text(
                     'LOGIN',
-                    style: TextStyle(
-                        color: Colors.black, fontSize: 20),
+                    style: TextStyle(color: Colors.black, fontSize: 20),
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 SignButton(
-                  loading: loading,
-                    text: loading ? const Center(child: CircularProgressIndicator(),) : const Text(
-                      'Sign UP',
-                      style: TextStyle(
-                        fontSize: 28, // Text size
-                        color: Colors.white, // Text color
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    loading: loading,
+                    text: 'Sign Up',
                     onPress: () async {
                       setState(() {
                         loading = true;
