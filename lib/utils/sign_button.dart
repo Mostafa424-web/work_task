@@ -21,9 +21,9 @@ class SignButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5), // Rounded corners
         ),
-        child: loading ? const Center(child: CircularProgressIndicator(),) : const Text(
-          'Sign UP',
-          style: TextStyle(
+        child: loading ? const Center(child: CircularProgressIndicator(),) : Text(
+          text,
+          style: const TextStyle(
             fontSize: 28, // Text size
             color: Colors.white, // Text color
             fontWeight: FontWeight.bold,

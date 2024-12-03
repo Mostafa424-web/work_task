@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
+import '../utils/styles.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -45,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     return 'email is not valid';
                   }
                 },
-                decoration: customInputDecoration(
+                decoration: AppStyles().customInputDecoration(
                     hintText: "email", icon: Icons.email_outlined),
               ),
             ),
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextFormField(
                 controller: passwordController,
                 obscureText: true,
-                decoration: customInputDecoration(
+                decoration: AppStyles().customInputDecoration(
                     hintText: "password",
                     icon: Icons.lock,
                     suffix: Icons.remove_red_eye),

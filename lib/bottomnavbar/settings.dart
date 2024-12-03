@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:works/utils/sign_button.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key, required this.userData});
@@ -143,6 +145,13 @@ class _SettingsViewState extends State<SettingsView> {
                       print('Edit email');
                     },
                   ),
+                  const SizedBox(height: 50),
+                  SignButton(
+                    onPress: _logout,
+                    text: 'Log Out',
+                    loading: false,
+                  ),
+
                 ],
               ),
             ),
@@ -150,6 +159,17 @@ class _SettingsViewState extends State<SettingsView> {
         );
       },
     );
+  }
+
+  Future<void> _logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context,'/sign'); // Replace '/signup' with your Sign Up route
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out: $e')),
+      );
+    }
   }
 
   // Function to build editable fields

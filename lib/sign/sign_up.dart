@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:works/bottomnavbar/home.dart';
+import 'package:works/utils/styles.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +17,7 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
+final _formKey = GlobalKey<FormState>(); // Form key for validation
 final TextEditingController nameController = TextEditingController();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passController = TextEditingController();
@@ -26,7 +29,7 @@ class _SignUpState extends State<SignUp> {
   final ImagePicker _picker = ImagePicker();
   bool loading = false;
   bool _isUploading = false;
-  bool showPassword = false;
+  bool showPassword = true;
   String? _image;
 
   Future<void> _pickImage() async {
@@ -171,85 +174,101 @@ class _SignUpState extends State<SignUp> {
                         ],
                       ),
                 const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextFormField(
-                    controller: nameController,
-                    decoration: customInputDecoration(
-                        hintText: "User name", icon: Icons.person_rounded),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextFormField(
-                    controller: emailController,
-                    validator: (emailController) {
-                      if (isValidEmail(emailController!.trim(), context)) {
-                        return 'email is valid';
-                      } else {
-                        return 'email is not valid';
-                      }
-                    },
-                    decoration: customInputDecoration(
-                        hintText: "email", icon: Icons.email_outlined),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: TextFormField(
-                      controller: passController,
-                      obscureText: showPassword,
-                      decoration: customInputDecoration(
-                          hintText: "password",
-                          icon: Icons.lock,
-                          onTap: () {
-                            setState(() {
-                              showPassword = !showPassword;
-                            });
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextFormField(
+                          controller: nameController,
+                          keyboardType: TextInputType.name,
+                          decoration: AppStyles().customInputDecoration(
+                              hintText: "User name", icon: Icons.person_rounded),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (emailController) {
+                            if (isValidEmail(emailController!.trim(), context)) {
+                              return null;
+                            } else {
+                              return 'email is not valid';
+                            }
                           },
-                          suffix: showPassword
-                              ? FontAwesomeIcons.eyeSlash
-                              : FontAwesomeIcons.eye),
-                    )),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: DropdownButtonFormField<String>(
-                    value: selectedRole,
-                    hint: const Text('Select a role'),
-                    items: roles.map((role) {
-                      return DropdownMenuItem<String>(
-                        value: role,
-                        child: Text(role),
-                      );
-                    }).toList(),
-                    onChanged: (value) async {
-                      setState(() {
-                        selectedRole = value;
-                      });
-                      print(selectedRole);
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    ),
+                          decoration: AppStyles().customInputDecoration(
+                              hintText: "email", icon: Icons.email_outlined),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextFormField(
+                            controller: passController,
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: showPassword,
+                            decoration: AppStyles().customInputDecoration(
+                                hintText: "password",
+                                icon: Icons.lock,
+                                onTap: () {
+                                  setState(() {
+                                    showPassword = !showPassword;
+                                  });
+                                },
+                                suffix: showPassword
+                                    ? FontAwesomeIcons.eyeSlash
+                                    : FontAwesomeIcons.eye),
+                          )),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: DropdownButtonFormField<String>(
+                          value: selectedRole,
+                          hint: const Text('Select a role'),
+                          items: roles.map((role) {
+                            return DropdownMenuItem<String>(
+                              value: role,
+                              child: Text(role),
+                            );
+                          }).toList(),
+                          onChanged: (value) async {
+                            setState(() {
+                              selectedRole = value;
+                            });
+                            print(selectedRole);
+                          },
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
                 selectedRole != null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: TextFormField(
                           controller: passRoleController,
+                          keyboardType: TextInputType.visiblePassword,
                           obscureText: true,
-                          decoration: customInputDecoration(
+                          decoration: AppStyles().customInputDecoration(
                               hintText: "password of Your role",
                               icon: Icons.lock,
+                              onTap: () {
+                                setState(() {
+                                  showPassword = !showPassword;
+                                });
+                              },
                               suffix: showPassword
                                   ? FontAwesomeIcons.eyeSlash
                                   : FontAwesomeIcons.eye),
@@ -277,6 +296,7 @@ class _SignUpState extends State<SignUp> {
                     loading: loading,
                     text: 'Sign Up',
                     onPress: () async {
+                      if (!_formKey.currentState!.validate()) return;
                       setState(() {
                         loading = true;
                       });
@@ -290,6 +310,11 @@ class _SignUpState extends State<SignUp> {
                       setState(() {
                         loading != loading;
                       });
+                      // Clear input fields after successful sign-up
+                      emailController.clear();
+                      passController.clear();
+                      passLevelController.clear();
+                      nameController.clear();
                       await _uploadImage();
                       setState(() {
                         loading = false;

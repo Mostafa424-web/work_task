@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/aswer_option.dart';
+import '../utils/styles.dart';
+
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key, required this.level, required this.role});
-
-
   final String level;
   final String role;
   @override
@@ -38,13 +39,13 @@ class _QuizScreenState extends State<QuizScreen> {
           }
 
           final Map<String, dynamic>? questionsMap =
-          snapshot.data!.data() as Map<String, dynamic>?;
+              snapshot.data!.data() as Map<String, dynamic>?;
           if (questionsMap == null || questionsMap.isEmpty) {
             return const Center(child: Text('No questions available.'));
           }
 
           final List<MapEntry<String, dynamic>> questions =
-          questionsMap.entries.toList();
+              questionsMap.entries.toList();
           final String currentQuestion = questions[_currentQuestionIndex].key;
           final Map<String, dynamic> options =
               questions[_currentQuestionIndex].value;
@@ -84,7 +85,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: options.entries.map((entry) {
-                    return GestureDetector(
+                    return InkWell(
                       onTap: () {
                         setState(() {
                           _selectedAnswer = entry.key; // Mark selected answer
@@ -106,19 +107,21 @@ class _QuizScreenState extends State<QuizScreen> {
                         // Show a Snackbar if no answer is selected
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text("Please select an answer before proceeding."),
+                            content: Text(
+                                "Please select an answer before proceeding."),
                             duration: Duration(seconds: 2),
                           ),
                         );
                         return; // Exit the function to prevent moving to the next question
                       }
-                      if(_selectedAnswer == "5" ||
+                      if (_selectedAnswer == "5" ||
                           _selectedAnswer == "10" ||
-                          _selectedAnswer == "30"){
+                          _selectedAnswer == "30") {
                         _score += int.parse(_selectedAnswer!);
                         FirebaseFirestore.instance
-                        .collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
-                        .update({'score': _score});
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .update({'score': _score});
                       }
                       setState(() {
                         if (_currentQuestionIndex < questions.length - 1) {
@@ -126,38 +129,12 @@ class _QuizScreenState extends State<QuizScreen> {
                           _selectedAnswer = null; // Reset selected answer
                         } else {
                           // Show a message or navigate to another screen when quiz ends
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text("Quiz Completed!"),
-                              content:  Text(
-                                """You have reached the end of the quiz.
-                                Your Score is $_score;
-                                    """,
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("OK"),
-                                ),
-                              ],
-                            ),
-                          );
+                          buildShowDialog(context);
                         }
                       });
                     });
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
+                  style: AppStyles().buildStyleFromElevated(),
                   child: Text(
                     _currentQuestionIndex < questions.length - 1
                         ? "Next"
@@ -168,12 +145,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                   ),
                 ),
-                /* 
-                - at the end of the questions show a dialog contains 
-                - [ score - wrong question was q2 - the answer was c - 
-                return home
-                ]
-                 */
               ],
             ),
           );
@@ -181,41 +152,27 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
     );
   }
-}
 
-class AnswerOption extends StatelessWidget {
-  final String text;
-  final bool isSelected;
 
-  const AnswerOption({Key? key, required this.text, this.isSelected = false})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.blue : Colors.white,
-        border: Border.all(
-          color: isSelected ? Colors.blue : Colors.grey,
-          width: 2,
+  Future<dynamic> buildShowDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Quiz Completed!"),
+        content: Text(
+          """You have reached the end of the quiz.
+                              Your Score is $_score;
+                                  """,
         ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          const BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 3),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            child: const Text("OK"),
           ),
         ],
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          color: isSelected ? Colors.white : Colors.black,
-        ),
       ),
     );
   }

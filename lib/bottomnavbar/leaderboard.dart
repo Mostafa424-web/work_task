@@ -54,50 +54,46 @@ class _LeaderboardViewState extends State<LeaderboardView> {
           const SizedBox(height: 8),
           // Student List
           StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .where('role', isEqualTo: selectedCategory)
-                          // .orderBy('created_at', descending: true)
-                          .snapshots(),
-                      builder:
-                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Center(
-                              child: Text("No students found."));
-                        }
-                        final studentData = snapshot.data!.docs
-                            .map((doc) => doc.data() as Map<String, dynamic>)
-                            .toList();
-                        return Expanded(
-                          child: ListView.builder(
-                            itemCount: studentData.length,
-                            itemBuilder: (context, index) {
-                              final student = studentData[index];
-                              return Card(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                child: ListTile(
-                                  leading: const CircleAvatar(
-                                      /* backgroundImage: NetworkImage(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .where('role', isEqualTo: selectedCategory)
+                  // .orderBy('created_at', descending: true)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text("No students found."));
+                }
+                final studentData = snapshot.data!.docs
+                    .map((doc) => doc.data() as Map<String, dynamic>)
+                    .toList();
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: studentData.length,
+                    itemBuilder: (context, index) {
+                      final student = studentData[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                              /* backgroundImage: NetworkImage(
                           'image from firestore'), */ // Replace with actual image URLs
-                                      ),
-                                  title: Text(student['name']),
-                                  subtitle:
-                                      Text('${student['role']} - Level 1'),
-                                  trailing: Text(
-                                    'Score \n ${student['score'] ?? '-'}',
-                                  style: TextStyle(fontSize: 15),),
-                                ),
-                              );
-                            },
+                              ),
+                          title: Text(student['name']),
+                          subtitle: Text('${student['role']} - Level 1'),
+                          trailing: Text(
+                            'Score \n ${student['score'] ?? '-'}',
+                            style: const TextStyle(fontSize: 15),
                           ),
-                        );
-                      })
+                        ),
+                      );
+                    },
+                  ),
+                );
+              })
         ],
       ),
     );
