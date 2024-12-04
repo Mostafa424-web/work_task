@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:works/bottomnavbar/quiz.dart';
 
+import '../utils/functions.dart';
 import '../utils/level_card.dart';
 
 class HomeScreenView extends StatefulWidget {
@@ -11,6 +12,7 @@ class HomeScreenView extends StatefulWidget {
   State<HomeScreenView> createState() => _HomeScreenViewState();
 }
 String passLevel = '';
+List levels = [];
 final TextEditingController passLevelController = TextEditingController();
 
 
@@ -18,6 +20,11 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   @override
   void dispose() {
     super.dispose();
+  }
+  @override
+  void initState() {
+    _loadCompletedLevels();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
@@ -69,6 +76,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: LevelCard(
                           passLevel: passLevel,
+                            levels: levels,
                             level: index + 1,
                             onTap: () => showPasswordDialog(context, index,'${widget.userData!['role']}'),
                             index: index, studentRole: '${widget.userData!['role']}',),
@@ -81,8 +89,25 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       ),
     );
   }
-}
 
+  Future<void> _loadCompletedLevels() async {
+    try {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userData!['uid']) // Unique user ID
+          .get();
+      Map<String, dynamic>? userData =
+      userSnapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null && widget.userData!['completedLevels'] != null) {
+        setState(() {
+          levels = List<String>.from(widget.userData!['completedLevels']);
+        });
+      }
+    } catch (e) {
+      print('Error loading completed levels: $e');
+    }
+  }
 void showPasswordDialog(BuildContext context, int index, String roleStudent) {
   showDialog(
     context: context,
@@ -119,13 +144,24 @@ void showPasswordDialog(BuildContext context, int index, String roleStudent) {
                   data['Level ${index + 1}']) {
                 print('Password correct for Level ${index + 1}');
                 passLevel = 'Level ${index + 1}';
+                if (!levels.contains(passLevel)) {
+                  levels.add(passLevel); // Add to completed levels
+                }
+                // Update Firestore
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(widget.userData!['uid']) // Unique user ID
+                    .update({
+                  'completedLevels': FieldValue.arrayUnion([passLevel]),
+                });
                 passLevelController.clear();
+                setState(() {  });
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => QuizScreen(level: passLevel,role: roleStudent,)),
                 );
               } else {
-                print('Incorrect Pass');
+                showCustomSnackBar(context: context, message: 'Your Password Incorrect');
               }
             },
             child: const Text("Submit"),
@@ -135,3 +171,5 @@ void showPasswordDialog(BuildContext context, int index, String roleStudent) {
     },
   );
 }
+}
+

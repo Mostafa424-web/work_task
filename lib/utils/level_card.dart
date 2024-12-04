@@ -6,11 +6,12 @@ class LevelCard extends StatelessWidget {
   final int? index;
   final String studentRole;
   final String passLevel;
+  final List levels;
   const LevelCard({
     super.key,
     required this.level,
     required this.onTap,
-    this.index, required this.studentRole, required this.passLevel,
+    this.index, required this.studentRole, required this.passLevel, required this.levels,
   });
 
   @override
@@ -39,17 +40,17 @@ class LevelCard extends StatelessWidget {
               ),
             ),
           ),
-          passLevel != 'Level ${index! + 1}'
-              ? Positioned(
-            right: MediaQuery.of(context).size.width * 0.4,
+          passLevel == 'Level ${index! + 1}' || levels.contains('Level ${index! + 1}')
+              ? const SizedBox() // Level is unlocked, no lock icon
+              : Positioned(
+            right: MediaQuery.of(context).size.width * 0.36,
             bottom: 10,
             child: Icon(
-              Icons.lock, // Example icon, replace if needed
+              Icons.lock,
               color: Colors.grey[700],
               size: 20,
             ),
-          )
-              : const SizedBox(),
+          ),
         ],
       ),
     );

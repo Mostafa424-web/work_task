@@ -41,7 +41,6 @@ Future<User?> signUpWithEmailAndPassword(
     context,
     String? role,
     String passwordRole) async {
-  int currentNumber = 1;
   try {
     // Check if email, password or name is empty
     if (email.isEmpty ||
@@ -56,7 +55,6 @@ Future<User?> signUpWithEmailAndPassword(
           .doc('passwords')
           .get();
       final passrole = docSnapshot.data();
-      currentNumber = currentNumber + 1;
       if ((role == 'Flutter Mentor' ||
               role == 'UI/UX Mentor' ||
               role == 'Tester Mentor' ||
@@ -69,18 +67,18 @@ Future<User?> signUpWithEmailAndPassword(
           passwordRole == passrole![role]) {
         User? user = await signup_handle(email, password);
         Map<String, dynamic> userData = {
-          'number': currentNumber,
           'name': name,
           'email': email,
           'role': role,
           'created_at': FieldValue.serverTimestamp(),
           'uid': user!.uid,
+          'completedLevels': [],
         };
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .set(userData);
-        Navigator.pushNamed(
+        Navigator.pushReplacementNamed(
           context,
           '/bottomNav',
           arguments: userData,

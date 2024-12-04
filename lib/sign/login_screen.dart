@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:works/sign/sign_up.dart';
 import '../utils/functions.dart';
 import '../utils/sign_button.dart';
 import '../utils/styles.dart';
@@ -126,8 +127,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userDoc.exists) {
           Map<String, dynamic>? userData =
               userDoc.data() as Map<String, dynamic>?;
-
-          Navigator.pushNamed(
+          nameController.clear();
+          emailController.clear();
+          Navigator.pushReplacementNamed(
             context,
             '/bottomNav',
             arguments: userData,
