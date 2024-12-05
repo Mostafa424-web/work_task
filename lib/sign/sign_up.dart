@@ -22,6 +22,7 @@ final TextEditingController nameController = TextEditingController();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passController = TextEditingController();
 final TextEditingController passRoleController = TextEditingController();
+final TextEditingController passLevelController = TextEditingController();
 
 class _SignUpState extends State<SignUp> {
   String? selectedRole;

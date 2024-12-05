@@ -1,88 +1,66 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:works/bottomnavbar/quiz.dart';
+import 'package:works/utils/firebase_utils.dart';
+import 'package:works/utils/functions.dart';
 
-import '../utils/functions.dart';
 import '../utils/level_card.dart';
+import '../utils/user_info_display.dart';
 
 class HomeScreenView extends StatefulWidget {
+
   const HomeScreenView({super.key, required this.userData});
-  final Map<String, dynamic>? userData;
+  final Map<String, dynamic> userData;
+
   @override
   State<HomeScreenView> createState() => _HomeScreenViewState();
 }
-String passLevel = '';
-List levels = [];
-final TextEditingController passLevelController = TextEditingController();
-
 
 class _HomeScreenViewState extends State<HomeScreenView> {
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  late List<String> levels = [];
+  final TextEditingController passLevelController = TextEditingController();
+
   @override
   void initState() {
-    _loadCompletedLevels();
     super.initState();
+    _loadCompletedLevels();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Stack(
         children: [
-          // Positioned text in the top-right corner
           Positioned(
             top: 16,
             right: 16,
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.end, // Align text to the right
-                children: [
-                  Text(
-                    "Hello: ${widget.userData!['name']}", // Replace "Username" dynamically
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4), // Small space between the texts
-                  Text(
-                    "role: ${widget.userData!['role']}",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
+            child: UserInfoDisplay(
+              name: widget.userData['name'],
+              role: widget.userData['role'],
             ),
           ),
-          // Main content: Levels
           Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center, // Center content vertically
-            crossAxisAlignment:
-                CrossAxisAlignment.center, // Center content horizontally
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
                 child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    itemCount: 12,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: LevelCard(
-                          passLevel: passLevel,
-                            levels: levels,
-                            level: index + 1,
-                            onTap: () => showPasswordDialog(context, index,'${widget.userData!['role']}'),
-                            index: index, studentRole: '${widget.userData!['role']}',),
-                      );
-                    }),
-              )
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  itemCount: 12,
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: LevelCard(
+                      passLevel: '',
+                      levels: levels,
+                      level: index + 1,
+                      onTap: () =>
+                          _showPasswordDialog(context, index, widget.userData['role']),
+                      index: index,
+                      studentRole: widget.userData['role'],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ],
@@ -91,85 +69,55 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   }
 
   Future<void> _loadCompletedLevels() async {
-    try {
-      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userData!['uid']) // Unique user ID
-          .get();
-      Map<String, dynamic>? userData =
-      userSnapshot.data() as Map<String, dynamic>?;
-
-      if (userData != null && widget.userData!['completedLevels'] != null) {
-        setState(() {
-          levels = List<String>.from(widget.userData!['completedLevels']);
-        });
-      }
-    } catch (e) {
-      print('Error loading completed levels: $e');
-    }
+    levels = await FirebaseUtils.getCompletedLevels(widget.userData['uid']);
+    setState(() {});
   }
-void showPasswordDialog(BuildContext context, int index, String roleStudent) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Enter Password"),
-        content: TextField(
-          controller: passLevelController,
-          decoration: const InputDecoration(
-            hintText: "Enter level password",
-          ),
-          onChanged: (value) {
-            passLevel = passLevelController.text.trim();
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () async {
-              // Perform validation
-              DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-                  .collection('pwdrole')
-                  .doc('password_level') // Firestore collection name
-                  .get();
-              Map<String, dynamic>? data =
-                  docSnapshot.data() as Map<String, dynamic>?;
-              if (data == null || data['Level ${index + 1}'] == null) {
-                print('Field does not exist');
-                return;
-              } else if (passLevelController.text.trim() ==
-                  data['Level ${index + 1}']) {
-                print('Password correct for Level ${index + 1}');
-                passLevel = 'Level ${index + 1}';
-                if (!levels.contains(passLevel)) {
-                  levels.add(passLevel); // Add to completed levels
-                }
-                // Update Firestore
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(widget.userData!['uid']) // Unique user ID
-                    .update({
-                  'completedLevels': FieldValue.arrayUnion([passLevel]),
-                });
-                passLevelController.clear();
-                setState(() {  });
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => QuizScreen(level: passLevel,role: roleStudent,)),
-                );
-              } else {
-                showCustomSnackBar(context: context, message: 'Your Password Incorrect');
-              }
-            },
-            child: const Text("Submit"),
-          ),
-        ],
-      );
-    },
-  );
-}
-}
 
+  void _showPasswordDialog(BuildContext context, int index, String role) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Enter Password"),
+          content: TextField(
+            controller: passLevelController,
+            decoration: const InputDecoration(hintText: "Enter level password"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                final passwords = await FirebaseUtils.getLevelPasswords();
+                final levelPassword = passwords?['Level ${index + 1}'];
+
+                if (levelPassword == null ||
+                    passLevelController.text.trim() != levelPassword) {
+                  showCustomSnackBar(
+                    context: context,
+                    message: 'Your Password Incorrect',
+                  );
+                } else {
+                  final level = 'Level ${index + 1}';
+                  levels.add(level);
+                  await FirebaseUtils.updateCompletedLevels(widget.userData['uid'], level);
+                  passLevelController.clear();
+                  setState(() {});
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QuizScreen(level: level, role: role),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

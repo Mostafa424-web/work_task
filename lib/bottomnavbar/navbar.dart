@@ -30,7 +30,7 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
     // TODO: implement initState
     super.initState();
     screens = [
-      HomeScreenView(userData: widget.userData),
+      HomeScreenView(userData: widget.userData!),
       AttendanceView(userData: widget.userData),
       LeaderboardView(userData: widget.userData,),
       InstructorsView(userData: widget.userData),

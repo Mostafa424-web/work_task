@@ -5,15 +5,15 @@ import 'package:works/bottomnavbar/settings.dart';
 import 'package:works/mentornavbar/attendance.dart';
 import 'package:works/mentornavbar/home.dart';
 
-class BottomNavBarScreen extends StatefulWidget {
-  const BottomNavBarScreen({super.key, required this.userData});
+class MentorBottomNavBarScreen extends StatefulWidget {
+  const MentorBottomNavBarScreen({super.key, required this.userData});
   final Map<String, dynamic>? userData;
 
   @override
-  State<BottomNavBarScreen> createState() => _BottomNavBarScreenState();
+  State<MentorBottomNavBarScreen> createState() => _MentorBottomNavBarScreenState();
 }
 
-class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
+class _MentorBottomNavBarScreenState extends State<MentorBottomNavBarScreen> {
   /* 
   NOTE: when i move these above the override it works 
   when it was after the build {
