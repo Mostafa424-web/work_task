@@ -47,8 +47,8 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.cyanAccent,
+        unselectedItemColor: Colors.blueGrey,
         items: const [
           BottomNavigationBarItem(
             label: 'home',

@@ -20,6 +20,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Students'),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

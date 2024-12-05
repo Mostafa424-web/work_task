@@ -44,6 +44,7 @@ class _SettingsViewState extends State<SettingsView> {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Profile'),
+            automaticallyImplyLeading: false,
           ),
           body: SingleChildScrollView(
             child: Padding(
