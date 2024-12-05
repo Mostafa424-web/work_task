@@ -211,7 +211,6 @@ class _SignUpState extends State<SignUp> {
                           child: TextFormField(
                             controller: passController,
                             keyboardType: TextInputType.visiblePassword,
-                            obscureText: showPassword,
                             decoration: AppStyles().customInputDecoration(
                                 hintText: "password",
                                 icon: Icons.lock,
@@ -220,9 +219,7 @@ class _SignUpState extends State<SignUp> {
                                     showPassword = !showPassword;
                                   });
                                 },
-                                suffix: showPassword
-                                    ? FontAwesomeIcons.eyeSlash
-                                    : FontAwesomeIcons.eye),
+                                ),
                           )),
                       const SizedBox(
                         height: 20,
@@ -261,18 +258,11 @@ class _SignUpState extends State<SignUp> {
                         child: TextFormField(
                           controller: passRoleController,
                           keyboardType: TextInputType.visiblePassword,
-                          obscureText: true,
                           decoration: AppStyles().customInputDecoration(
                               hintText: "password of Your role",
                               icon: Icons.lock,
-                              onTap: () {
-                                setState(() {
-                                  showPassword = !showPassword;
-                                });
-                              },
-                              suffix: showPassword
-                                  ? FontAwesomeIcons.eyeSlash
-                                  : FontAwesomeIcons.eye),
+                              onTap: () {},
+                             ),
                         ),
                       )
                     : const SizedBox(
@@ -280,7 +270,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(
+                    Navigator.pushReplacementNamed(
                       context,
                       '/login',
                     );

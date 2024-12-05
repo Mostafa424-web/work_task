@@ -17,99 +17,105 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Add Question TextField
-          TextField(
-            controller: _questionController,
-            decoration: InputDecoration(
-              hintText: 'Add Question..',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Add Question TextField
+                TextField(
+                  controller: _questionController,
+                  decoration: InputDecoration(
+                    hintText: 'Add Question..',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+        
+                // Add Answer 1 TextField
+                TextField(
+                  controller: _answer1Controller,
+                  decoration: InputDecoration(
+                    hintText: 'Add Answer 1..',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+        
+                // Add Answer 2 TextField
+                TextField(
+                  controller: _answer2Controller,
+                  decoration: InputDecoration(
+                    hintText: 'Add Answer 2..',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+        
+                // Add Answer 3 TextField
+                TextField(
+                  controller: _answer3Controller,
+                  decoration: InputDecoration(
+                    hintText: 'Add Answer 3..',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+        
+                // Choose Level Dropdown
+                DropdownButtonFormField<String>(
+                  value: _selectedLevel,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    hintText: 'Choose Level',
+                  ),
+                  items: ['level 1', 'level 2', 'level 3']
+                      .map((level) => DropdownMenuItem(
+                            value: level,
+                            child: Text(level),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedLevel = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+        
+                // Points Selector Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildPointButton(5),
+                    _buildPointButton(10),
+                    _buildPointButton(20),
+                  ],
+                ),
+                const SizedBox(height: 20),
+        
+                // Submit Button
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: const Text('Submit'),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-
-          // Add Answer 1 TextField
-          TextField(
-            controller: _answer1Controller,
-            decoration: InputDecoration(
-              hintText: 'Add Answer 1..',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Add Answer 2 TextField
-          TextField(
-            controller: _answer2Controller,
-            decoration: InputDecoration(
-              hintText: 'Add Answer 2..',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Add Answer 3 TextField
-          TextField(
-            controller: _answer3Controller,
-            decoration: InputDecoration(
-              hintText: 'Add Answer 3..',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Choose Level Dropdown
-          DropdownButtonFormField<String>(
-            value: _selectedLevel,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              hintText: 'Choose Level',
-            ),
-            items: ['level 1', 'level 2', 'level 3']
-                .map((level) => DropdownMenuItem(
-                      value: level,
-                      child: Text(level),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedLevel = value;
-              });
-            },
-          ),
-          const SizedBox(height: 16),
-
-          // Points Selector Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildPointButton(5),
-              _buildPointButton(10),
-              _buildPointButton(20),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Submit Button
-          ElevatedButton(
-            onPressed: _submitForm,
-            child: const Text('Submit'),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -55,15 +55,9 @@ Future<User?> signUpWithEmailAndPassword(
           .doc('passwords')
           .get();
       final passrole = docSnapshot.data();
-      if ((role == 'Flutter Mentor' ||
-              role == 'UI/UX Mentor' ||
-              role == 'Tester Mentor' ||
-              role == 'Flutter Learner' ||
+      if ((role == 'Flutter Learner' ||
               role == 'UIUX Learner' ||
-              role == 'Tester Learner' ||
-              role == 'Flutter Instructor' ||
-              role == 'UI/UX Instructor' ||
-              role == 'Tester Instructor') &&
+              role == 'Tester Learner') &&
           passwordRole == passrole![role]) {
         User? user = await signup_handle(email, password);
         Map<String, dynamic> userData = {
@@ -84,7 +78,32 @@ Future<User?> signUpWithEmailAndPassword(
           arguments: userData,
         );
         return user;
-      } else {
+      } else if ((role == 'Flutter Mentor' ||
+          role == 'UI/UX Mentor' ||
+          role == 'Tester Mentor' ||
+          role == 'Flutter Instructor' ||
+          role == 'UI/UX Instructor' ||
+          role == 'Tester Instructor') && passwordRole == passrole![role]){
+        User? user = await signup_handle(email, password);
+        Map<String, dynamic> userData = {
+          'name': name,
+          'email': email,
+          'role': role,
+          'created_at': FieldValue.serverTimestamp(),
+          'uid': user!.uid,
+        };
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userData);
+        Navigator.pushReplacementNamed(
+          context,
+          '/mentorBottomNav',
+          arguments: userData,
+        );
+        return user;
+      }
+      else {
         showCustomSnackBar(
             context: context,
             message: "Invalid role or password role selected.");

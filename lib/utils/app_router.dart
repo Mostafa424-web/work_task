@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:works/mentornavbar/navbar.dart';
 import 'package:works/sign/sign_up.dart';
 
 import '../bottomnavbar/navbar.dart';
@@ -21,6 +22,11 @@ class AppRouter {
         final userData = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (context) => BottomNavBarScreen(userData: userData),
+        );
+      case '/mentorBottomNav':
+        final userData = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => MentorBottomNavBarScreen(userData: userData),
         );
 
       default:

@@ -20,23 +20,34 @@ class AdminHomeScreenViewState extends State<AdminHomeScreenView> {
             color: Colors.white,
             child: Column(
               children: [
-                Text("welcome, let's start"),
-                Divider(
+                const Text("welcome, let's start"),
+                const Divider(
                   color: Colors.blue,
                   indent: 50,
                   endIndent: 50,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (builder) => AddQuestionForm()));
+                      showDialog(context: context, builder: (context) =>
+                      AlertDialog(
+                        title: const Text(
+                          'Will Added Soon',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                                Navigator.pop(context);
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      )
+                      );
                     },
-                    child: Text('add quiz'))
+                    child: const Text('add quiz'))
               ],
             ),
           )

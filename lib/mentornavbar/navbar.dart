@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:works/bottomnavbar/instructors.dart';
 import 'package:works/bottomnavbar/leaderboard.dart';
 import 'package:works/bottomnavbar/settings.dart';
 import 'package:works/mentornavbar/attendance.dart';
 import 'package:works/mentornavbar/home.dart';
+
+import 'instructor_view.dart';
 
 class MentorBottomNavBarScreen extends StatefulWidget {
   const MentorBottomNavBarScreen({super.key, required this.userData});
@@ -33,7 +34,7 @@ class _MentorBottomNavBarScreenState extends State<MentorBottomNavBarScreen> {
       AdminHomeScreenView(),
       AdminAttendanceView(userData: widget.userData,),
       LeaderboardView(userData: widget.userData,),
-      InstructorsView(userData: widget.userData),
+      InstructorsViewStudent(userData: widget.userData),
       SettingsView(userData: widget.userData,),
     ];
   }
@@ -47,8 +48,8 @@ class _MentorBottomNavBarScreenState extends State<MentorBottomNavBarScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.cyanAccent,
+        unselectedItemColor: Colors.blueGrey,
         items: const [
           BottomNavigationBarItem(
             label: 'home',
@@ -57,7 +58,7 @@ class _MentorBottomNavBarScreenState extends State<MentorBottomNavBarScreen> {
             ),
           ),
           BottomNavigationBarItem(
-            label: 'attendance',
+            label: 'Attendence',
             icon: Icon(
               Icons.show_chart,
             ),
