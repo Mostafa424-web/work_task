@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:works/mentornavbar/addquiz.dart';
 
 class AdminHomeScreenView extends StatefulWidget {
+  const AdminHomeScreenView({super.key});
+
   @override
   State<AdminHomeScreenView> createState() => AdminHomeScreenViewState();
 }

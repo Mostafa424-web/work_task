@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:works/bottomnavbar/attendance.dart';
-import 'package:works/bottomnavbar/home.dart';
-import 'package:works/bottomnavbar/instructors.dart';
-import 'package:works/bottomnavbar/leaderboard.dart';
-import 'package:works/bottomnavbar/settings.dart';
+import 'package:works/bottom_navbar/leaderboard.dart';
+import 'package:works/bottom_navbar/settings.dart';
+import 'package:works/mentor_navbar/attendance.dart';
+import 'package:works/mentor_navbar/home.dart';
 
-class BottomNavBarScreen extends StatefulWidget {
-  const BottomNavBarScreen({super.key, required this.userData});
+import 'instructor_view.dart';
+
+class MentorBottomNavBarScreen extends StatefulWidget {
+  const MentorBottomNavBarScreen({super.key, required this.userData});
   final Map<String, dynamic>? userData;
 
   @override
-  State<BottomNavBarScreen> createState() => _BottomNavBarScreenState();
+  State<MentorBottomNavBarScreen> createState() => _MentorBottomNavBarScreenState();
 }
 
-class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
-  /*
+class _MentorBottomNavBarScreenState extends State<MentorBottomNavBarScreen> {
+  /* 
   NOTE: when i move these above the override it works 
   when it was after the build {
   it doesnt't work 
@@ -30,11 +31,11 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
     // TODO: implement initState
     super.initState();
     screens = [
-      HomeScreenView(userData: widget.userData!),
-      AttendanceView(userData: widget.userData),
+      AdminHomeScreenView(),
+      AdminAttendanceView(userData: widget.userData,),
       LeaderboardView(userData: widget.userData,),
-      InstructorsView(userData: widget.userData),
-      SettingsView(userData: widget.userData),
+      InstructorsViewStudent(userData: widget.userData),
+      SettingsView(userData: widget.userData,),
     ];
   }
 
@@ -47,8 +48,8 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.cyanAccent,
+        unselectedItemColor: Colors.blueGrey,
         items: const [
           BottomNavigationBarItem(
             label: 'home',
@@ -57,7 +58,7 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
             ),
           ),
           BottomNavigationBarItem(
-            label: 'attendance',
+            label: 'Attendence',
             icon: Icon(
               Icons.show_chart,
             ),

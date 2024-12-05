@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:works/bottomnavbar/quiz.dart';
+import 'package:works/bottom_navbar/quiz.dart';
 import 'package:works/utils/firebase_utils.dart';
 import 'package:works/utils/functions.dart';
 
