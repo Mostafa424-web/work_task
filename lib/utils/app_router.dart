@@ -26,7 +26,7 @@ class AppRouter {
       case '/mentorBottomNav':
         final userData = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (context) => MentorBottomNavBarScreen(userData: userData),
+          builder: (context) => MentorBottomNavBarScreen(userData: userData,),
         );
 
       default:

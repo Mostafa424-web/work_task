@@ -19,6 +19,12 @@ class _InstructorsViewStudentState extends State<InstructorsViewStudent> {
 
   @override
   Widget build(BuildContext context) {
+    selectedCategory = (widget.userData!['role'] == 'UI/UX Mentor' ||
+        widget.userData!['role'] == 'UI/UX Instructor') ? 'UIUX Learner' :
+    (widget.userData!['role'] == 'Flutter Mentor' ||
+        widget.userData!['role'] == 'Flutter Instructor') ? 'Flutter Learner' :
+    (widget.userData!['role'] == 'Tester Mentor' ||
+        widget.userData!['role'] == 'Tester Instructor') ? 'Tester Learner' : 'UIUX Learner';
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -27,32 +33,90 @@ class _InstructorsViewStudentState extends State<InstructorsViewStudent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Category Selection Chips
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: ['UIUX Learner', 'Flutter Learner', 'Tester Learner']
-                    .map((category) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: ChoiceChip(
-                      label: Text(category),
-                      selected: selectedCategory == category,
-                      onSelected: (isSelected) {
-                        if (isSelected) {
-                          setState(() {
-                            selectedCategory = category;
-                          });
-                          fetchStudentsByCategory(category);
-                        }
-                      },
+          (widget.userData!['role'] == 'UI/UX Mentor' ||
+                  widget.userData!['role'] == 'UI/UX Instructor')
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: ['UIUX Learner'].map((category) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: ChoiceChip(
+                            label: Text(category),
+                            selected: selectedCategory == category,
+                            onSelected: (isSelected) {
+                              if (isSelected) {
+                                setState(() {
+                                  selectedCategory = category;
+                                });
+                                fetchStudentsByCategory(category);
+                              }
+                            },
+                          ),
+                        ); //
+                      }).toList(),
                     ),
-                  ); //
-                }).toList(),
-              ),
-            ),
-          ),
+                  ),
+                )
+              : (widget.userData!['role'] == 'Flutter Mentor' ||
+                      widget.userData!['role'] == 'Flutter Instructor')
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: ['Flutter Learner'].map((category) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: ChoiceChip(
+                                label: Text(category),
+                                selected: selectedCategory == category,
+                                onSelected: (isSelected) {
+                                  if (isSelected) {
+                                    setState(() {
+                                      selectedCategory = category;
+                                    });
+                                    fetchStudentsByCategory(category);
+                                  }
+                                },
+                              ),
+                            ); //
+                          }).toList(),
+                        ),
+                      ),
+                    )
+                  : (widget.userData!['role'] == 'Tester Mentor' ||
+                          widget.userData!['role'] == 'Tester Instructor')
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: ['Tester Learner'].map((category) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4.0),
+                                  child: ChoiceChip(
+                                    label: Text(category),
+                                    selected: selectedCategory == category,
+                                    onSelected: (isSelected) {
+                                      if (isSelected) {
+                                        setState(() {
+                                          selectedCategory = category;
+                                        });
+                                        fetchStudentsByCategory(category);
+                                      }
+                                    },
+                                  ),
+                                ); //
+                              }).toList(),
+                            ),
+                          ),
+                        )
+                      : const Text("Role Not Selected"),
           const SizedBox(height: 8),
           // Student List
           StreamBuilder(
@@ -85,8 +149,7 @@ class _InstructorsViewStudentState extends State<InstructorsViewStudent> {
                               ),
                           title: Text(student['name']),
                           subtitle: Text('${student['role']}'),
-                          trailing:
-                          ElevatedButton(
+                          trailing: ElevatedButton(
                             onPressed: () async {
                               showAddPointsDialog(context, student['uid']);
                             },
@@ -94,8 +157,8 @@ class _InstructorsViewStudentState extends State<InstructorsViewStudent> {
                                 backgroundColor: const Color(0xff0086CC)),
                             child: const Text(
                               'Add Points',
-                              style: TextStyle(
-                                  fontSize: 15, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.white),
                             ),
                           ),
                         ),
@@ -130,22 +193,27 @@ class _InstructorsViewStudentState extends State<InstructorsViewStudent> {
                   return;
                 }
                 try {
-                  final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+                  final userDoc = FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(userId);
 
                   // Update Firestore using a transaction
-                  await FirebaseFirestore.instance.runTransaction((transaction) async {
+                  await FirebaseFirestore.instance
+                      .runTransaction((transaction) async {
                     DocumentSnapshot snapshot = await transaction.get(userDoc);
 
                     if (!snapshot.exists) {
                       throw Exception("User does not exist!");
                     }
 
-                    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+                    Map<String, dynamic>? data =
+                        snapshot.data() as Map<String, dynamic>?;
 
                     // Ensure the 'score' field exists
                     int currentScore = data?['score'] ?? 0;
 
-                    transaction.update(userDoc, {'score': currentScore + pointsToAdd});
+                    transaction
+                        .update(userDoc, {'score': currentScore + pointsToAdd});
                   });
 
                   // Close the dialog
@@ -161,7 +229,6 @@ class _InstructorsViewStudentState extends State<InstructorsViewStudent> {
       },
     );
   }
-
 
   Future<void> fetchStudentsByCategory(String category) async {
     setState(() {

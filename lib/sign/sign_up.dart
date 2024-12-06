@@ -15,14 +15,14 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
-final _formKey = GlobalKey<FormState>(); // Form key for validation
-final TextEditingController nameController = TextEditingController();
-final TextEditingController emailController = TextEditingController();
-final TextEditingController passController = TextEditingController();
-final TextEditingController passRoleController = TextEditingController();
-final TextEditingController passLevelController = TextEditingController();
 
 class _SignUpState extends State<SignUp> {
+  final _formKey = GlobalKey<FormState>(); // Form key for validation
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  final TextEditingController passRoleController = TextEditingController();
+  final TextEditingController passLevelController = TextEditingController();
   String? selectedRole;
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
@@ -91,6 +91,7 @@ class _SignUpState extends State<SignUp> {
     emailController.dispose();
     passController.dispose();
     passRoleController.dispose();
+    passLevelController.dispose();
     super.dispose();
   }
 
@@ -300,10 +301,14 @@ class _SignUpState extends State<SignUp> {
                         loading != loading;
                       });
                       // Clear input fields after successful sign-up
+                      if(mounted){
+                        setState(() {
                       emailController.clear();
                       passController.clear();
                       passLevelController.clear();
                       nameController.clear();
+                        });
+                      }
                       await _uploadImage();
                       setState(() {
                         loading = false;

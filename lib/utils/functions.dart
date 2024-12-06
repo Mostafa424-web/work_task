@@ -99,7 +99,7 @@ Future<User?> signUpWithEmailAndPassword(
         Navigator.pushReplacementNamed(
           context,
           '/mentorBottomNav',
-          arguments: userData,
+          arguments: userData
         );
         return user;
       }
